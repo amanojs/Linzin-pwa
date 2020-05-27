@@ -1,8 +1,8 @@
-import * as React from 'react';
-import next, { NextPage } from 'next';
-import Head from 'next/head';
-import { Button } from './components/Atoms/Button';
-import Link from 'next/link';
+import * as React from 'react'
+import next, { NextPage } from 'next'
+import Head from 'next/head'
+import { Button } from '../components/Atoms/Button'
+import Link from 'next/link'
 
 const TestPage: NextPage = () => {
   return (
@@ -17,7 +17,7 @@ const TestPage: NextPage = () => {
         </a>
       </Link>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default TestPage;
+export default TestPage

@@ -7,10 +7,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "firebase": "^7.14.5",
     "next": "^9.1.7",
     "next-offline": "^4.0.6",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "skyway-js": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^13.1.5",
