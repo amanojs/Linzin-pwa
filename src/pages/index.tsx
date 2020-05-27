@@ -67,6 +67,7 @@ const IndexPage: NextPage = () => {
       .getUserMedia({ video: true, audio: true })
       .then(function(stream: MediaStream) {
         own_video.current.srcObject = stream
+        own_video.current.play()
         localstream = stream
         fb.on('value', (snapshot) => {
           const users = snapshot.val()
@@ -93,6 +94,7 @@ const IndexPage: NextPage = () => {
       .getUserMedia({ video: true, audio: true })
       .then(async function(stream: MediaStream) {
         own_video.current.srcObject = stream
+        own_video.current.play()
         localstream = stream
         const mediaConnection = await peer.call(partnerinfo.peerid, localstream)
         setEventListener(mediaConnection)
