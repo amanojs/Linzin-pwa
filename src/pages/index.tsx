@@ -88,15 +88,13 @@ const IndexPage: NextPage = () => {
 
   /* 通信確立 */
   const connectPartner = async (partnerinfo: WaitingRoom) => {
-    var localstream
     db.ref(runroom + '/' + partnerinfo.userid + '/guest').set({ userid: 'guest' })
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then(async function(stream: MediaStream) {
         own_video.current.srcObject = stream
         own_video.current.play()
-        localstream = stream
-        const mediaConnection = await peer.call(partnerinfo.peerid, localstream)
+        const mediaConnection = await peer.call(partnerinfo.peerid, stream)
         mediaConnection.once('close', () => {
           alert('通話が終了しました')
           partner_video.current.srcObject = null
@@ -110,6 +108,7 @@ const IndexPage: NextPage = () => {
     db.ref(waitingroom + '/' + partnerinfo.userid).remove()
   }
 
+  /* 通話切断処理 */
   const hangUp = () => {
     Partner_mc.close(true)
     alert('通話を終了しました')
