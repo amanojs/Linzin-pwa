@@ -17,10 +17,11 @@ const IndexPage: NextPage = () => {
   const own_video = React.useRef({} as HTMLVideoElement)
   const partner_video = React.useRef({} as HTMLVideoElement)
 
+  var Partner_mc: any
+
   const waitingroom: string = 'TestRoom'
   const runroom: string = 'RunRoom'
   var peer: any
-
   var partner: string
 
   React.useEffect(() => {
@@ -77,6 +78,10 @@ const IndexPage: NextPage = () => {
         peer.on('call', (mediaConnection: any) => {
           mediaConnection.answer(localstream)
           setEventListener(mediaConnection)
+          mediaConnection.once('close', () => {
+            console.log('通信が切断されました')
+            partner_video.current.srcObject = null
+          })
         })
       })
       .catch(function(error) {
@@ -97,6 +102,10 @@ const IndexPage: NextPage = () => {
         own_video.current.play()
         localstream = stream
         const mediaConnection = await peer.call(partnerinfo.peerid, localstream)
+        mediaConnection.once('close', () => {
+          alert('通が終了しました')
+          partner_video.current.srcObject = null
+        })
         setEventListener(mediaConnection)
       })
       .catch(function(error) {
@@ -106,8 +115,15 @@ const IndexPage: NextPage = () => {
     db.ref(waitingroom + '/' + partnerinfo.userid).remove()
   }
 
+  const hangUp = () => {
+    Partner_mc.close(true)
+    alert('通話を終了しました')
+  }
+
+  //リモートストリームをvideoに設定
   const setEventListener = (mediaConnection: any) => {
     console.log('setEventListenerだよ')
+    Partner_mc = mediaConnection
     mediaConnection.on('stream', (stream: MediaStream) => {
       partner_video.current.srcObject = stream
       partner_video.current.play()
@@ -124,6 +140,7 @@ const IndexPage: NextPage = () => {
       <Video ref={partner_video} mute={false} />
       <button onClick={() => tryCall()}>Call</button>
       <button onClick={() => testAdd()}>Add</button>
+      <button onClick={() => hangUp()}>Hang up</button>
       <Link href={{ pathname: '/TestPage', query: { name: 'Amano' } }} as="/Amano/TestPage">
         <a>
           <Button color="#fff" backcolor="#555" value="テストボタン" />
