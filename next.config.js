@@ -1,10 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const withOffline = require('next-offline');
+require('dotenv').config()
 
 module.exports = withOffline({
   target: 'serverless',
   transformManifest: (manifest) => ['/'].concat(manifest),
   generateInDevMode: false,
+  env: {
+    SKYWAY_KEY: process.env.SKYWAY_KEY,
+  },
   workboxOpts: {
     swDest: 'static/service-worker.js',
     runtimeCaching: [

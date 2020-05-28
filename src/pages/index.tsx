@@ -2,36 +2,34 @@ import * as React from 'react'
 import next, { NextPage } from 'next'
 import Link from 'next/link'
 import Head from 'next/head'
+/* global var */
 import { db } from '../plugins/firebase'
+import { waitingroom, runroom } from '../globalvar'
+import { startPeer } from '../plugins/skyway'
+/* models */
+import { WaitingRoom } from '../models/Room'
+import * as PeerType from 'skyway-js/skyway-js'
+/* components */
 import { Button } from '../components/Atoms/Button'
 import { Video } from '../components/Atoms/Video'
-declare var Peer: any
-
-interface WaitingRoom {
-  userid: string
-  peerid: string
-}
 
 const IndexPage: NextPage = () => {
   /* refs */
   const own_video = React.useRef({} as HTMLVideoElement)
   const partner_video = React.useRef({} as HTMLVideoElement)
 
-  var Partner_mc: any
+  /* パートナーとの通信管理する */
+  var Partner_mc: PeerType.MediaConnection
 
-  const waitingroom: string = 'TestRoom'
-  const runroom: string = 'RunRoom'
-  var peer: any
-  var partner: string
-
+  var peer: PeerType.default
   React.useEffect(() => {
-    peer = new Peer({
-      key: 'b89bb244-f3d2-4bf9-aa78-049eae962ad2',
-      debug: 3
+    /* Peerをnewする */
+    peer = startPeer()
+    peer.on('error', (err: Error) => {
+      alert('通信エラーが発生しました')
+      console.log('peer-error:' + err)
     })
-    return () => {
-      db.ref(runroom + '/' + partner).remove()
-    }
+    return () => {}
   }, [])
 
   /* パートナー検索 */
@@ -42,7 +40,6 @@ const IndexPage: NextPage = () => {
         if (snapshot.val()) {
           const partnerinfo: WaitingRoom = snapshot.val()
           console.log('パートナー情報:', partnerinfo)
-          partner = partnerinfo.userid
           connectPartner(partnerinfo)
           return
         }
@@ -56,27 +53,25 @@ const IndexPage: NextPage = () => {
   }
 
   const testAdd = () => {
-    var localstream: MediaStream
-    const id = '9000'
+    const id: string = '9000'
     const data: WaitingRoom = {
       userid: id,
       peerid: peer.id
     }
-    const fb = db.ref(runroom + '/' + id)
+    const fb: firebase.database.Reference = db.ref(runroom + '/' + id)
     db.ref(waitingroom + '/' + id).set(data)
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then(function(stream: MediaStream) {
         own_video.current.srcObject = stream
         own_video.current.play()
-        localstream = stream
-        fb.on('value', (snapshot) => {
+        fb.on('value', (snapshot: firebase.database.DataSnapshot) => {
           const users = snapshot.val()
           console.log('snapshot:', users)
           if (users.guest) console.log('guestが参加しました')
         })
         peer.on('call', (mediaConnection: any) => {
-          mediaConnection.answer(localstream)
+          mediaConnection.answer(stream)
           setEventListener(mediaConnection)
           mediaConnection.once('close', () => {
             console.log('通信が切断されました')
@@ -103,7 +98,7 @@ const IndexPage: NextPage = () => {
         localstream = stream
         const mediaConnection = await peer.call(partnerinfo.peerid, localstream)
         mediaConnection.once('close', () => {
-          alert('通が終了しました')
+          alert('通話が終了しました')
           partner_video.current.srcObject = null
         })
         setEventListener(mediaConnection)
@@ -120,7 +115,7 @@ const IndexPage: NextPage = () => {
     alert('通話を終了しました')
   }
 
-  //リモートストリームをvideoに設定
+  /* リモートストリームをvideoに設定 */
   const setEventListener = (mediaConnection: any) => {
     console.log('setEventListenerだよ')
     Partner_mc = mediaConnection
