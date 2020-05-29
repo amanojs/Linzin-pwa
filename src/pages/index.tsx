@@ -1,8 +1,8 @@
 import * as React from 'react'
 import next, { NextPage } from 'next'
-import Link from 'next/link'
-import Head from 'next/head'
+
 /* global var */
+import store from '../store'
 import { db } from '../plugins/firebase'
 import { waitingroom, runroom } from '../globalvar'
 import { startPeer } from '../plugins/skyway'
@@ -10,8 +10,11 @@ import { startPeer } from '../plugins/skyway'
 import { WaitingRoom } from '../models/Room'
 import * as PeerType from 'skyway-js/skyway-js'
 /* components */
+import Link from 'next/link'
+import Head from 'next/head'
 import { Button } from '../components/Atoms/Button'
 import { Video } from '../components/Atoms/Video'
+import { Provider } from 'react-redux'
 
 const IndexPage: NextPage = () => {
   /* refs */
@@ -115,7 +118,7 @@ const IndexPage: NextPage = () => {
   }
 
   /* リモートストリームをvideoに設定 */
-  const setEventListener = (mediaConnection: any) => {
+  const setEventListener = (mediaConnection: PeerType.MediaConnection) => {
     console.log('setEventListenerだよ')
     Partner_mc = mediaConnection
     mediaConnection.on('stream', (stream: MediaStream) => {
@@ -130,16 +133,18 @@ const IndexPage: NextPage = () => {
         <link rel="manifest" href="/manifest.json" />
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
-      <Video ref={own_video} mute={false} />
-      <Video ref={partner_video} mute={false} />
-      <button onClick={() => tryCall()}>Call</button>
-      <button onClick={() => testAdd()}>Add</button>
-      <button onClick={() => hangUp()}>Hang up</button>
-      <Link href={{ pathname: '/TestPage', query: { name: 'Amano' } }} as="/Amano/TestPage">
-        <a>
-          <Button color="#fff" backcolor="#555" value="テストボタン" />
-        </a>
-      </Link>
+      <Provider store={store}>
+        <Video ref={own_video} mute={false} />
+        <Video ref={partner_video} mute={false} />
+        <button onClick={() => tryCall()}>Call</button>
+        <button onClick={() => testAdd()}>Add</button>
+        <button onClick={() => hangUp()}>Hang up</button>
+        <Link href={{ pathname: '/TestPage', query: { name: 'Amano' } }} as="/Amano/TestPage">
+          <a>
+            <Button color="#fff" backcolor="#555" value="テストボタン" />
+          </a>
+        </Link>
+      </Provider>
     </React.Fragment>
   )
 }
