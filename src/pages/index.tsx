@@ -57,7 +57,7 @@ const IndexPage: NextPage = () => {
   const connectPartner = async (partnerinfo: WaitingRoom) => {
     db.ref(runroom + '/' + partnerinfo.userid + '/guest').set({ userid: 'guest' })
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+      .getUserMedia({ video: true, audio: false })
       .then(async function(stream: MediaStream) {
         setOwn(stream)
         const mediaConnection = await peer.call(partnerinfo.peerid, stream)

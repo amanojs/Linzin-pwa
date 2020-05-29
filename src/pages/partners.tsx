@@ -34,7 +34,7 @@ const PartnersPage: NextPage = () => {
     const fb: firebase.database.Reference = db.ref(runroom + '/' + id)
     db.ref(waitingroom + '/' + id).set(data)
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: true })
+      .getUserMedia({ video: true, audio: false })
       .then(function(stream: MediaStream) {
         setOwn(stream)
         fb.on('value', (snapshot: firebase.database.DataSnapshot) => {
@@ -75,6 +75,7 @@ const PartnersPage: NextPage = () => {
       </Head>
       <Provider store={store}>
         <div>
+          改善版
           <CallDisp Partner_mc={Partner_mc} own_videosrc={own_videosrc} partner_videosrc={partner_videosrc} />
           <button onClick={() => testAdd()}>待機</button>
         </div>
