@@ -26,36 +26,44 @@ const PartnersPage: NextPage = () => {
   }, [])
 
   const testAdd = () => {
-    const id: string = '9000'
-    const data: WaitingRoom = {
-      userid: id,
-      peerid: peer.id
-    }
-    const fb: firebase.database.Reference = db.ref(runroom + '/' + id)
-    db.ref(waitingroom + '/' + id).set(data)
     navigator.mediaDevices
-      .getUserMedia({ video: true })
-      .then(function(stream: MediaStream) {
-        setOwn(stream)
-        fb.on('value', (snapshot: firebase.database.DataSnapshot) => {
-          const users = snapshot.val()
-          console.log('snapshot:', users)
-          if (users.guest) console.log('guestが参加しました')
-        })
-        peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
-          mediaConnection.answer(stream)
-          setEventListener(mediaConnection)
-          mediaConnection.once('close', () => {
-            console.log('通信が切断されました')
-            setPartner(null)
+      .enumerateDevices()
+      .then((devices: MediaDeviceInfo[]) => {
+        const id: string = '9000'
+        const data: WaitingRoom = {
+          userid: id,
+          peerid: peer.id
+        }
+        const fb: firebase.database.Reference = db.ref(runroom + '/' + id)
+        db.ref(waitingroom + '/' + id).set(data)
+        navigator.mediaDevices
+          .getUserMedia({ video: true })
+          .then(function(stream: MediaStream) {
+            setOwn(stream)
+            fb.on('value', (snapshot: firebase.database.DataSnapshot) => {
+              const users = snapshot.val()
+              console.log('snapshot:', users)
+              if (users.guest) console.log('guestが参加しました')
+            })
+            peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
+              mediaConnection.answer(stream)
+              setEventListener(mediaConnection)
+              mediaConnection.once('close', () => {
+                console.log('通信が切断されました')
+                setPartner(null)
+              })
+            })
           })
-        })
+          .catch(function(error) {
+            console.error(error)
+            return
+          })
+        db.ref(runroom + '/' + id + '/' + id).set(data)
       })
-      .catch(function(error) {
-        console.error(error)
-        return
+      .catch((err: Error) => {
+        alert('使用可能なカメラ、またはマイクを接続してください')
       })
-    db.ref(runroom + '/' + id + '/' + id).set(data)
+    return
   }
 
   /* リモートストリームをvideoに設定 */

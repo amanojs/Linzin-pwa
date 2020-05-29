@@ -35,35 +35,41 @@ const IndexPage: NextPage = () => {
 
   /* パートナー検索 */
   const tryCall = () => {
-    try {
-      const fb = db.ref(waitingroom)
-      fb.once('child_added').then((snapshot) => {
-        if (snapshot.val()) {
-          const partnerinfo: WaitingRoom = snapshot.val()
-          console.log('パートナー情報:', partnerinfo)
-          connectPartner(partnerinfo)
+    navigator.mediaDevices
+      .enumerateDevices()
+      .then((devices: MediaDeviceInfo[]) => {
+        try {
+          const fb = db.ref(waitingroom)
+          fb.once('child_added').then((snapshot) => {
+            if (snapshot.val()) {
+              const partnerinfo: WaitingRoom = snapshot.val()
+              console.log('パートナー情報:', partnerinfo)
+              connectPartner(partnerinfo)
+              return
+            }
+          })
+          return
+        } catch (e) {
+          /* エラー処理(まだどうするか考えてない) */
+          alert('trycall error')
           return
         }
       })
-      return
-    } catch (e) {
-      /* エラー処理(まだどうするか考えてない) */
-      alert('trycall error')
-      return
-    }
+      .catch((err: Error) => {
+        alert('使用可能なビデオカメラ、またはマイクを接続してください')
+      })
   }
 
   /* 通信確立 */
-  const connectPartner = async (partnerinfo: WaitingRoom) => {
+  const connectPartner = (partnerinfo: WaitingRoom) => {
     db.ref(runroom + '/' + partnerinfo.userid + '/guest').set({ userid: 'guest' })
     navigator.mediaDevices
       .getUserMedia({ video: true })
-      .then(async function(stream: MediaStream) {
+      .then((stream: MediaStream) => {
         setOwn(stream)
-        const mediaConnection = await peer.call(partnerinfo.peerid, stream)
+        const mediaConnection = peer.call(partnerinfo.peerid, stream)
         mediaConnection.once('close', () => {
           alert('通話が終了しました')
-          //navigator.mediaDevices.
           setPartner(null)
         })
         setEventListener(mediaConnection)
