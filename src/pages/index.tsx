@@ -15,11 +15,11 @@ import Head from 'next/head'
 import { Button } from '../components/Atoms/Button'
 import { Video } from '../components/Atoms/Video'
 import { Provider } from 'react-redux'
+import { CallDisp } from '../components/Moles/CallDisp'
 
 const IndexPage: NextPage = () => {
-  /* refs */
-  const own_video = React.useRef({} as HTMLVideoElement)
-  const partner_video = React.useRef({} as HTMLVideoElement)
+  const [own_videosrc, setOwn] = React.useState<MediaStream | null>(null)
+  const [partner_videosrc, setPartner] = React.useState<MediaStream | null>(null)
 
   /* パートナーとの通信管理する */
   var Partner_mc: PeerType.MediaConnection
@@ -66,19 +66,18 @@ const IndexPage: NextPage = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then(function(stream: MediaStream) {
-        own_video.current.srcObject = stream
-        own_video.current.play()
+        setOwn(stream)
         fb.on('value', (snapshot: firebase.database.DataSnapshot) => {
           const users = snapshot.val()
           console.log('snapshot:', users)
           if (users.guest) console.log('guestが参加しました')
         })
-        peer.on('call', (mediaConnection: any) => {
+        peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
           mediaConnection.answer(stream)
           setEventListener(mediaConnection)
           mediaConnection.once('close', () => {
             console.log('通信が切断されました')
-            partner_video.current.srcObject = null
+            setPartner(null)
           })
         })
       })
@@ -95,12 +94,11 @@ const IndexPage: NextPage = () => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then(async function(stream: MediaStream) {
-        own_video.current.srcObject = stream
-        own_video.current.play()
+        setOwn(stream)
         const mediaConnection = await peer.call(partnerinfo.peerid, stream)
         mediaConnection.once('close', () => {
           alert('通話が終了しました')
-          partner_video.current.srcObject = null
+          setPartner(null)
         })
         setEventListener(mediaConnection)
       })
@@ -122,8 +120,7 @@ const IndexPage: NextPage = () => {
     console.log('setEventListenerだよ')
     Partner_mc = mediaConnection
     mediaConnection.on('stream', (stream: MediaStream) => {
-      partner_video.current.srcObject = stream
-      partner_video.current.play()
+      setPartner(stream)
     })
   }
 
@@ -134,8 +131,7 @@ const IndexPage: NextPage = () => {
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
-        <Video ref={own_video} mute={false} />
-        <Video ref={partner_video} mute={false} />
+        <CallDisp own_videosrc={own_videosrc} partner_videosrc={partner_videosrc} />
         <button onClick={() => tryCall()}>Call</button>
         <button onClick={() => testAdd()}>Add</button>
         <button onClick={() => hangUp()}>Hang up</button>

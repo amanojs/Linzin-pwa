@@ -1,15 +1,24 @@
 import * as React from 'react'
 import { Video } from '../Atoms/Video'
 
-interface OwnProps {}
+interface OwnProps {
+  own_videosrc: MediaStream | null
+  partner_videosrc: MediaStream | null
+}
 
 export const CallDisp: React.FC<OwnProps> = (props) => {
-  const own_video = React.useRef({} as HTMLVideoElement)
-  const partner_video = React.useRef({} as HTMLVideoElement)
+  const ownRef = React.useRef({} as HTMLVideoElement)
+  const partnerRef = React.useRef({} as HTMLVideoElement)
+  React.useEffect(() => {
+    //own_video.current.srcObject = null
+    //partner_video.current.srcObject = null
+  })
+  ownRef.current.srcObject = props.own_videosrc
+  partnerRef.current.srcObject = props.partner_videosrc
   return (
     <div>
-      <Video ref={own_video} mute={false} />
-      <Video ref={partner_video} mute={false} />
+      <Video ref={ownRef} mute={false} />
+      <Video ref={partnerRef} mute={false} />
     </div>
   )
 }
