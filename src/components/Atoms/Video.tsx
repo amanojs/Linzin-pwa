@@ -12,7 +12,15 @@ export const Video = React.forwardRef((props: OwnProps, ref: React.LegacyRef<HTM
   console.log(tasks)
   return (
     <div>
-      <video ref={ref} width="400px" autoPlay muted={props.mute} playsInline />
+      <video
+        ref={ref}
+        width="400px"
+        height="250px"
+        autoPlay
+        muted={props.mute}
+        style={{ verticalAlign: 'bottom' }}
+        playsInline
+      />
     </div>
   )
 })
