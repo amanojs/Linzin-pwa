@@ -34,7 +34,7 @@ const PartnersPage: NextPage = () => {
     const fb: firebase.database.Reference = db.ref(runroom + '/' + id)
     db.ref(waitingroom + '/' + id).set(data)
     navigator.mediaDevices
-      .getUserMedia({ video: true, audio: false })
+      .getUserMedia({ video: true })
       .then(function(stream: MediaStream) {
         setOwn(stream)
         fb.on('value', (snapshot: firebase.database.DataSnapshot) => {
