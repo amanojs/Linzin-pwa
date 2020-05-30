@@ -7,6 +7,8 @@ import { waitingroom, runroom, findDevices } from '../globalvar'
 import { WaitingRoom } from '../models/Room'
 import { CallDisp } from '../components/Moles/CallDisp'
 import Head from 'next/head'
+import Link from 'next/link'
+import { Button } from '../components/Atoms/Button'
 import { Provider } from 'react-redux'
 import store from '../store'
 import { resolve } from 'dns'
@@ -83,6 +85,11 @@ const PartnersPage: NextPage = () => {
           <button onClick={() => testAdd()}>待機</button>
           <button onClick={() => stopHost()}>中止</button>
         </div>
+        <Link href={{ pathname: '/' }}>
+          <a>
+            <Button color="#fff" backcolor="#f00" value="コールズ" />
+          </a>
+        </Link>
       </Provider>
     </React.Fragment>
   )

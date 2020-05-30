@@ -98,6 +98,11 @@ const IndexPage: NextPage = () => {
             <Button color="#fff" backcolor="#555" value="テストボタン" />
           </a>
         </Link>
+        <Link href={{ pathname: '/partners' }}>
+          <a>
+            <Button color="#fff" backcolor="#f00" value="パートナーズ" />
+          </a>
+        </Link>
       </Provider>
     </React.Fragment>
   )
