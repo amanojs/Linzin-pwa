@@ -26,47 +26,29 @@ const PartnersPage: NextPage = () => {
     return () => {}
   }, [])
 
-  const testAdd = () => {
+  const testAdd = async () => {
+    const id: string = '9000'
+    const data: WaitingRoom = { userid: id, peerid: peer.id }
+    const result = await findDevices()
+    if (!result.video || !result.audio) return alert('使用可能なカメラ、またはマイクを接続してください')
     navigator.mediaDevices
-      .enumerateDevices()
-      .then(async (devices: MediaDeviceInfo[]) => {
-        const result = await findDevices(devices)
-        if (!result.video || !result.audio) return alert('使用可能なカメラ、またはマイクを接続してください')
-        const id: string = '9000'
-        const data: WaitingRoom = {
-          userid: id,
-          peerid: peer.id
-        }
-        navigator.mediaDevices
-          .getUserMedia({ video: true, audio: true })
-          .then(function(stream: MediaStream) {
-            console.log('getUserMedia')
-            db.ref(waitingroom + '/' + id).set(data)
-            db.ref(runroom + '/' + id + '/' + id).set(data)
-            setOwn(stream)
-            db.ref(runroom + '/' + id).on('value', (snapshot: firebase.database.DataSnapshot) => {
-              const users = snapshot.val()
-              console.log('snapshot:', users)
-              if (users.guest) console.log('guestが参加しました')
-            })
-            peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
-              mediaConnection.answer(stream)
-              setEventListener(mediaConnection)
-              mediaConnection.once('close', () => {
-                console.log('通信が切断されました')
-                setPartner(null)
-              })
-            })
+      .getUserMedia({ video: true, audio: true })
+      .then(function(stream: MediaStream) {
+        db.ref(waitingroom + '/' + id).set(data)
+        db.ref(runroom + '/' + id + '/' + id).set(data)
+        setOwn(stream)
+        peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
+          mediaConnection.answer(stream)
+          setEventListener(mediaConnection)
+          mediaConnection.once('close', () => {
+            alert('通信が切断されました')
+            setPartner(null)
           })
-          .catch(function(err: Error) {
-            alert('カメラ、オーディオの使用を許可してください')
-            console.error('エラーだよ' + err)
-            return
-          })
+        })
       })
-      .catch((err: Error) => {
-        console.log('errorです:', Error)
-        alert('使用可能なカメラ、またはマイクを接続してください')
+      .catch(function(err: Error) {
+        alert('カメラ、オーディオの使用を許可してください')
+        console.error('エラーだよ' + err)
       })
     return
   }

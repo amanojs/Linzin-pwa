@@ -35,37 +35,28 @@ const IndexPage: NextPage = () => {
 
   /* パートナー検索 */
   const tryCall = () => {
-    navigator.mediaDevices
-      .enumerateDevices()
-      .then((devices: MediaDeviceInfo[]) => {
-        const result = findDevices(devices)
-        try {
-          const fb = db.ref(waitingroom)
-          fb.once('child_added').then((snapshot) => {
-            if (snapshot.val()) {
-              const partnerinfo: WaitingRoom = snapshot.val()
-              console.log('パートナー情報:', partnerinfo)
-              connectPartner(partnerinfo)
-              return
-            }
-          })
-          return
-        } catch (e) {
-          /* エラー処理(まだどうするか考えてない) */
-          alert('trycall error')
-          return
+    const result = findDevices()
+    try {
+      const fb = db.ref(waitingroom)
+      fb.once('child_added').then((snapshot) => {
+        if (snapshot.val()) {
+          const partnerinfo: WaitingRoom = snapshot.val()
+          console.log('パートナー情報:', partnerinfo)
+          connectPartner(partnerinfo)
         }
       })
-      .catch((err: Error) => {
-        alert('使用可能なビデオカメラ、またはマイクを接続してください')
-      })
+    } catch (e) {
+      /* エラー処理(まだどうするか考えてない) */
+      alert('trycall error')
+    }
+    return
   }
 
   /* 通信確立 */
   const connectPartner = (partnerinfo: WaitingRoom) => {
     db.ref(runroom + '/' + partnerinfo.userid + '/guest').set({ userid: 'guest' })
     navigator.mediaDevices
-      .getUserMedia({ video: false, audio: true })
+      .getUserMedia({ video: true, audio: true })
       .then((stream: MediaStream) => {
         setOwn(stream)
         const mediaConnection = peer.call(partnerinfo.peerid, stream)

@@ -5,22 +5,26 @@ import store from '../../store'
 
 interface OwnProps {
   mute: boolean
+  mode: boolean
+  width: string
+  height: string
 }
 
 export const Video = React.forwardRef((props: OwnProps, ref: React.LegacyRef<HTMLVideoElement>) => {
   const { tasks } = useSelector((state: RootState) => state.tasks)
   console.log(tasks)
   return (
-    <div>
-      <video
-        ref={ref}
-        width="400px"
-        height="250px"
-        autoPlay
-        muted={props.mute}
-        style={{ verticalAlign: 'bottom' }}
-        playsInline
-      />
-    </div>
+    <React.Fragment>
+      <div>
+        <video ref={ref} width={props.width} height={props.height} autoPlay muted={props.mute} playsInline className="Video" />
+      </div>
+      <style jsx>{`
+        .Video {
+          verticalalign: 'bottom';
+          display: 'block';
+          border-radius: ${props.mode ? '5px' : '0px'};
+        }
+      `}</style>
+    </React.Fragment>
   )
 })
