@@ -72,6 +72,7 @@ const PartnersPage: NextPage = () => {
     <React.Fragment>
       <Head>
         <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/images/icon-192x192.png" sizes="192x192" />
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
