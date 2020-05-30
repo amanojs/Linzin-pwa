@@ -3,12 +3,13 @@ import next, { NextPage } from 'next'
 import * as PeerType from 'skyway-js/skyway-js'
 import { startPeer } from '../plugins/skyway'
 import { db } from '../plugins/firebase'
-import { waitingroom, runroom } from '../globalvar'
+import { waitingroom, runroom, findDevices } from '../globalvar'
 import { WaitingRoom } from '../models/Room'
 import { CallDisp } from '../components/Moles/CallDisp'
 import Head from 'next/head'
 import { Provider } from 'react-redux'
 import store from '../store'
+import { resolve } from 'dns'
 
 const PartnersPage: NextPage = () => {
   const [own_videosrc, setOwn] = React.useState<MediaStream | null>(null)
@@ -28,19 +29,22 @@ const PartnersPage: NextPage = () => {
   const testAdd = () => {
     navigator.mediaDevices
       .enumerateDevices()
-      .then((devices: MediaDeviceInfo[]) => {
+      .then(async (devices: MediaDeviceInfo[]) => {
+        const result = await findDevices(devices)
+        if (!result.video || !result.audio) return alert('使用可能なカメラ、またはマイクを接続してください')
         const id: string = '9000'
         const data: WaitingRoom = {
           userid: id,
           peerid: peer.id
         }
-        const fb: firebase.database.Reference = db.ref(runroom + '/' + id)
-        db.ref(waitingroom + '/' + id).set(data)
         navigator.mediaDevices
-          .getUserMedia({ video: true })
+          .getUserMedia({ video: true, audio: true })
           .then(function(stream: MediaStream) {
+            console.log('getUserMedia')
+            db.ref(waitingroom + '/' + id).set(data)
+            db.ref(runroom + '/' + id + '/' + id).set(data)
             setOwn(stream)
-            fb.on('value', (snapshot: firebase.database.DataSnapshot) => {
+            db.ref(runroom + '/' + id).on('value', (snapshot: firebase.database.DataSnapshot) => {
               const users = snapshot.val()
               console.log('snapshot:', users)
               if (users.guest) console.log('guestが参加しました')
@@ -54,13 +58,14 @@ const PartnersPage: NextPage = () => {
               })
             })
           })
-          .catch(function(error) {
-            console.error(error)
+          .catch(function(err: Error) {
+            alert('カメラ、オーディオの使用を許可してください')
+            console.error('エラーだよ' + err)
             return
           })
-        db.ref(runroom + '/' + id + '/' + id).set(data)
       })
       .catch((err: Error) => {
+        console.log('errorです:', Error)
         alert('使用可能なカメラ、またはマイクを接続してください')
       })
     return
@@ -68,7 +73,6 @@ const PartnersPage: NextPage = () => {
 
   /* リモートストリームをvideoに設定 */
   const setEventListener = (mediaConnection: PeerType.MediaConnection) => {
-    console.log('setEventListenerだよ')
     setMc(mediaConnection)
     mediaConnection.on('stream', (stream: MediaStream) => {
       setPartner(stream)

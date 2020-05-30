@@ -4,7 +4,7 @@ import next, { NextPage } from 'next'
 /* global var */
 import store from '../store'
 import { db } from '../plugins/firebase'
-import { waitingroom, runroom } from '../globalvar'
+import { waitingroom, runroom, findDevices } from '../globalvar'
 import { startPeer } from '../plugins/skyway'
 
 /* models */
@@ -38,6 +38,7 @@ const IndexPage: NextPage = () => {
     navigator.mediaDevices
       .enumerateDevices()
       .then((devices: MediaDeviceInfo[]) => {
+        const result = findDevices(devices)
         try {
           const fb = db.ref(waitingroom)
           fb.once('child_added').then((snapshot) => {
@@ -64,7 +65,7 @@ const IndexPage: NextPage = () => {
   const connectPartner = (partnerinfo: WaitingRoom) => {
     db.ref(runroom + '/' + partnerinfo.userid + '/guest').set({ userid: 'guest' })
     navigator.mediaDevices
-      .getUserMedia({ video: true })
+      .getUserMedia({ video: false, audio: true })
       .then((stream: MediaStream) => {
         setOwn(stream)
         const mediaConnection = peer.call(partnerinfo.peerid, stream)
@@ -83,7 +84,6 @@ const IndexPage: NextPage = () => {
 
   /* リモートストリームをvideoに設定 */
   const setEventListener = (mediaConnection: PeerType.MediaConnection) => {
-    console.log('setEventListenerだよ')
     setMc(mediaConnection)
     mediaConnection.on('stream', (stream: MediaStream) => {
       setPartner(stream)
