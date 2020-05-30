@@ -16,7 +16,10 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
 
   React.useEffect(() => {
     if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) changeMode(true)
-  })
+    return () => {
+      windowmode
+    }
+  }, [])
 
   ownRef.current.srcObject = props.own_videosrc
   partnerRef.current.srcObject = props.partner_videosrc
