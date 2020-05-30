@@ -34,8 +34,9 @@ const IndexPage: NextPage = () => {
   }, [])
 
   /* パートナー検索 */
-  const tryCall = () => {
-    const result = findDevices()
+  const tryCall = async () => {
+    const result = await findDevices()
+    if (!result.video || !result.audio) return alert('使用可能なカメラ、またはマイクを接続してください')
     try {
       const fb = db.ref(waitingroom)
       fb.once('child_added').then((snapshot) => {
@@ -88,7 +89,7 @@ const IndexPage: NextPage = () => {
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
-        <CallDisp Partner_mc={Partner_mc} own_videosrc={own_videosrc} partner_videosrc={partner_videosrc} />
+        <CallDisp Partner_mc={Partner_mc} own_videosrc={own_videosrc} partner_videosrc={partner_videosrc} display={own_videosrc != null ? true : false} />
         <button onClick={() => tryCall()}>Call</button>
         <Link href={{ pathname: '/TestPage', query: { name: 'Amano' } }} as="/Amano/TestPage">
           <a>

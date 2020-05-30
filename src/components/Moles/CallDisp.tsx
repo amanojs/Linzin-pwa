@@ -6,6 +6,7 @@ interface OwnProps {
   own_videosrc: MediaStream | null
   partner_videosrc: MediaStream | null
   Partner_mc: PeerType.MediaConnection | null
+  display: boolean
 }
 
 export const CallDisp: React.FC<OwnProps> = (props) => {
@@ -20,6 +21,7 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
   const hangUp = () => {
     if (props.Partner_mc) props.Partner_mc.close(true)
     alert('通話を終了しました')
+    location.reload()
   }
 
   return (
@@ -40,7 +42,7 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
       </div>
       <style jsx>{`
         .CallDisp {
-          display: flex;
+          display: ${props.display ? 'flex' : 'none'};
           justify-content: center;
           align-items: center;
           position: absolute;

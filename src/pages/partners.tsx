@@ -16,6 +16,7 @@ const PartnersPage: NextPage = () => {
   const [partner_videosrc, setPartner] = React.useState<MediaStream | null>(null)
   const [Partner_mc, setMc] = React.useState<PeerType.MediaConnection | null>(null)
 
+  var myid: string = ''
   var peer: PeerType.default
   React.useEffect(() => {
     peer = startPeer()
@@ -27,16 +28,16 @@ const PartnersPage: NextPage = () => {
   }, [])
 
   const testAdd = async () => {
-    const id: string = '9000'
-    const data: WaitingRoom = { userid: id, peerid: peer.id }
+    myid = new Date().getTime().toString(16) + Math.floor(10 * Math.random()).toString(16)
+    const data: WaitingRoom = { userid: myid, peerid: peer.id }
     const result = await findDevices()
     if (!result.video || !result.audio) return alert('使用可能なカメラ、またはマイクを接続してください')
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then(function(stream: MediaStream) {
-        db.ref(waitingroom + '/' + id).set(data)
-        db.ref(runroom + '/' + id + '/' + id).set(data)
         setOwn(stream)
+        db.ref(waitingroom + '/' + myid).set(data)
+        db.ref(runroom + '/' + myid + '/' + myid).set(data)
         peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
           mediaConnection.answer(stream)
           setEventListener(mediaConnection)
@@ -51,6 +52,12 @@ const PartnersPage: NextPage = () => {
         console.error('エラーだよ' + err)
       })
     return
+  }
+
+  /* 待機中止 */
+  const stopHost = () => {
+    db.ref(waitingroom + '/' + myid).remove()
+    alert('ホストを中断しました')
   }
 
   /* リモートストリームをvideoに設定 */
@@ -70,8 +77,9 @@ const PartnersPage: NextPage = () => {
       <Provider store={store}>
         <div>
           改善版
-          <CallDisp Partner_mc={Partner_mc} own_videosrc={own_videosrc} partner_videosrc={partner_videosrc} />
+          <CallDisp Partner_mc={Partner_mc} own_videosrc={own_videosrc} partner_videosrc={partner_videosrc} display={own_videosrc != null ? true : false} />
           <button onClick={() => testAdd()}>待機</button>
+          <button onClick={() => stopHost()}>中止</button>
         </div>
       </Provider>
     </React.Fragment>
