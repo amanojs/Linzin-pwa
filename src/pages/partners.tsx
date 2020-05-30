@@ -61,6 +61,7 @@ const PartnersPage: NextPage = () => {
   const stopHost = () => {
     db.ref(waitingroom + '/' + myid).remove()
     alert('ホストを中断しました')
+    location.reload()
   }
 
   /* リモートストリームをvideoに設定 */

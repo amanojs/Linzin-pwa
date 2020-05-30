@@ -24,6 +24,18 @@ export const Video = React.forwardRef((props: OwnProps, ref: React.LegacyRef<HTM
           display: 'block';
           border-radius: ${props.mode ? '5px' : '0px'};
         }
+        *::-webkit-media-controls-panel {
+          display: none !important;
+          -webkit-appearance: none;
+        }
+        *::--webkit-media-controls-play-button {
+          display: none !important;
+          -webkit-appearance: none;
+        }
+        *::-webkit-media-controls-start-playback-button {
+          display: none !important;
+          -webkit-appearance: none;
+        }
       `}</style>
     </React.Fragment>
   )
