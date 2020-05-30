@@ -28,9 +28,9 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
     <React.Fragment>
       <div className="CallDisp" style={{ position: 'absolute', width: windowmode ? '100%' : '400px', height: windowmode ? '100vh' : '250px' }}>
         <div className="OwnVideo">
-          <Video ref={ownRef} mute={false} mode={windowmode} width={windowmode ? '200px' : '100px'} height={windowmode ? '120px' : '60px'} />
+          <Video ref={ownRef} mute={true} mode={windowmode} width={windowmode ? '200px' : '100px'} height={windowmode ? '120px' : '60px'} />
         </div>
-        <Video ref={partnerRef} mute={true} mode={windowmode} width={windowmode ? '100%' : '400px'} height={windowmode ? '100%' : '250px'} />
+        <Video ref={partnerRef} mute={false} mode={windowmode} width={windowmode ? '100%' : '400px'} height={windowmode ? '100%' : '250px'} />
         <div className="UIboard">
           <div className="CloseBtn Btn" onClick={() => hangUp()}>
             ✖
