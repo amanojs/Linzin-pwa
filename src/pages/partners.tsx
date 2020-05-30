@@ -42,8 +42,9 @@ const PartnersPage: NextPage = () => {
           mediaConnection.answer(stream)
           setEventListener(mediaConnection)
           mediaConnection.once('close', () => {
-            alert('通信が切断されました')
+            alert('通信が終了されました')
             setPartner(null)
+            location.reload()
           })
         })
       })

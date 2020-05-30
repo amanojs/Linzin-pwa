@@ -13,9 +13,11 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
   const ownRef = React.useRef({} as HTMLVideoElement)
   const partnerRef = React.useRef({} as HTMLVideoElement)
   const [windowmode, changeMode] = React.useState(false)
+  const [windowsize, setSize] = React.useState(0)
 
   React.useEffect(() => {
     if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) changeMode(true)
+    setSize(window.innerHeight)
   })
 
   ownRef.current.srcObject = props.own_videosrc
@@ -30,7 +32,7 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
 
   return (
     <React.Fragment>
-      <div className="CallDisp" style={{ position: 'absolute', width: windowmode ? '100%' : '400px', height: windowmode ? '100vh' : '250px' }}>
+      <div className="CallDisp" style={{ position: 'absolute', width: windowmode ? '100%' : '400px', height: windowmode ? windowsize + 'px' : '250px' }}>
         <div className="OwnVideo">
           <Video ref={ownRef} mute={true} mode={windowmode} width={windowmode ? '200px' : '100px'} height={windowmode ? '120px' : '60px'} />
         </div>
@@ -97,6 +99,18 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
         }
         .WindowMode:hover {
           background-color: #2c3e50;
+        }
+        *::-webkit-media-controls-panel {
+          display: none !important;
+          -webkit-appearance: none;
+        }
+        *::--webkit-media-controls-play-button {
+          display: none !important;
+          -webkit-appearance: none;
+        }
+        *::-webkit-media-controls-start-playback-button {
+          display: none !important;
+          -webkit-appearance: none;
         }
       `}</style>
     </React.Fragment>

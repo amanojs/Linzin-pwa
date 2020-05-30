@@ -62,8 +62,9 @@ const IndexPage: NextPage = () => {
         setOwn(stream)
         const mediaConnection = peer.call(partnerinfo.peerid, stream)
         mediaConnection.once('close', () => {
-          alert('通話が終了しました')
+          alert('通話が終了されました')
           setPartner(null)
+          location.reload()
         })
         setEventListener(mediaConnection)
       })
