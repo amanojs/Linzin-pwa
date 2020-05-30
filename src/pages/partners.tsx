@@ -39,8 +39,8 @@ const PartnersPage: NextPage = () => {
       .then(function(stream: MediaStream) {
         setOwn(stream)
         db.ref(waitingroom + '/' + myid).set(data)
-        db.ref(runroom + '/' + myid + '/' + myid).set(data)
         peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
+          db.ref(runroom + '/' + myid + '/' + myid).set(data)
           mediaConnection.answer(stream)
           setEventListener(mediaConnection)
           mediaConnection.once('close', () => {

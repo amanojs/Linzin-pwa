@@ -56,16 +56,18 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
           border-radius: 10px;
           background-color: #222;
           transition: 0.5s;
+          z-index: 2;
         }
         .OwnVideo {
           position: absolute;
-          bottom: ${windowmode ? '20px' : '5px'};
+          top: ${windowmode ? '20px' : '5px'};
           right: ${windowmode ? '20px' : '5px'};
           width: ${windowmode ? '200px' : '100px'};
           height: ${windowmode ? '120px' : '60px'};
           background-color: #333;
           border-radius: 5px;
           transition: 0.2s;
+          z-index: 3;
         }
         .UIboard {
           display: flex;
@@ -73,6 +75,7 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
           width: 100%;
           position: absolute;
           bottom: 10px;
+          z-index: 4;
         }
         .Btn {
           display: flex;
