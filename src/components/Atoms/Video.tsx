@@ -16,7 +16,16 @@ export const Video = React.forwardRef((props: OwnProps, ref: React.LegacyRef<HTM
   return (
     <React.Fragment>
       <div>
-        <video ref={ref} width={props.width} height={props.height} autoPlay muted={props.mute} playsInline className="Video" controls={false} />
+        <video
+          ref={ref}
+          width={props.width}
+          height={props.height}
+          autoPlay
+          muted={props.mute}
+          playsInline
+          className="Video"
+          controls={false}
+        />
       </div>
       <style jsx>{`
         .Video {

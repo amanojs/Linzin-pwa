@@ -33,11 +33,26 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
 
   return (
     <React.Fragment>
-      <div className="CallDisp" style={{ width: windowmode ? '100%' : '400px', height: windowmode ? '100vh' : '250px' }}>
+      <div
+        className="CallDisp"
+        style={{ width: windowmode ? '100%' : '400px', height: windowmode ? '100vh' : '250px' }}
+      >
         <div className="OwnVideo">
-          <Video ref={ownRef} mute={true} mode={windowmode} width={windowmode ? '200px' : '100px'} height={windowmode ? '120px' : '60px'} />
+          <Video
+            ref={ownRef}
+            mute={true}
+            mode={windowmode}
+            width={windowmode ? '200px' : '100px'}
+            height={windowmode ? '120px' : '60px'}
+          />
         </div>
-        <Video ref={partnerRef} mute={false} mode={windowmode} width={windowmode ? '100%' : '400px'} height={windowmode ? '100%' : '250px'} />
+        <Video
+          ref={partnerRef}
+          mute={false}
+          mode={windowmode}
+          width={windowmode ? '100%' : '400px'}
+          height={windowmode ? '100%' : '250px'}
+        />
         <div className="UIboard">
           <div className="CloseBtn Btn" onClick={() => hangUp()}>
             ✖
@@ -56,7 +71,7 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
           bottom: 0;
           right: 0;
           overflow: hidden;
-          border-radius: 10px;
+          border-radius: ${windowmode ? '0px' : '10px'};
           background-color: #222;
           transition: 0.5s;
           z-index: 2;
