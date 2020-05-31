@@ -75,6 +75,22 @@ export const TopLayout: React.FC<OwnProps> = (props) => {
           font-weight: bold;
           letter-spacing: 1px;
         }
+        @media screen and (max-width: 480px) {
+          .TopLayout {
+            width: 350px;
+          }
+          .Ui {
+            width: 350px;
+            margin: 0 auto;
+            padding: 60px 0 0 0;
+          }
+          .CallBtn {
+            padding: 20px;
+          }
+          .Ui p {
+            letter-spacing: 0px;
+          }
+        }
       `}</style>
     </React.Fragment>
   )
