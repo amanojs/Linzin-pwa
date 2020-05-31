@@ -95,6 +95,7 @@ const PartnersPage: NextPage = () => {
           own_videosrc={own_videosrc}
           partner_videosrc={partner_videosrc}
           display={own_videosrc != null ? true : false}
+          partnerMethod={stopHost}
         />
         <button onClick={() => testAdd()}>待機</button>
         <button onClick={() => stopHost()}>中止</button>
@@ -107,6 +108,7 @@ const PartnersPage: NextPage = () => {
       <style jsx global>{`
         body {
           margin: 0px;
+          font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
         }
       `}</style>
     </React.Fragment>

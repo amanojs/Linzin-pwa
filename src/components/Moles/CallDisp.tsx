@@ -7,15 +7,20 @@ interface OwnProps {
   partner_videosrc: MediaStream | null
   Partner_mc: PeerType.MediaConnection | null
   display: boolean
+  partnerMethod?(): void
 }
 
 export const CallDisp: React.FC<OwnProps> = (props) => {
   const ownRef = React.useRef({} as HTMLVideoElement)
   const partnerRef = React.useRef({} as HTMLVideoElement)
   const [windowmode, changeMode] = React.useState(false)
+  const [isMobile, setMobile] = React.useState(false)
 
   React.useEffect(() => {
-    if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) changeMode(true)
+    if (navigator.userAgent.match(/iPhone|Android.+Mobile/)) {
+      changeMode(true)
+      setMobile(true)
+    }
     return () => {
       windowmode
     }
@@ -26,16 +31,28 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
 
   /* 通話切断処理 */
   const hangUp = () => {
-    if (props.Partner_mc) props.Partner_mc.close(true)
+    if (!props.Partner_mc) return
+    props.Partner_mc.close(true)
     alert('通話を終了しました')
     location.reload()
+  }
+
+  /* ウィンドウモード変更 */
+  const changeWindow = () => {
+    if (navigator.userAgent.match(/iPhone|Android.+Mobile/) && windowmode) {
+      return alert('現在スマートフォンではサイズの変更ができません')
+    }
+    changeMode(!windowmode)
   }
 
   return (
     <React.Fragment>
       <div
         className="CallDisp"
-        style={{ width: windowmode ? '100%' : '400px', height: windowmode ? '100vh' : '250px' }}
+        style={{
+          width: windowmode ? '100%' : '400px',
+          height: windowmode ? '100vh' : '250px'
+        }}
       >
         <div className="OwnVideo">
           <Video
@@ -54,11 +71,14 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
           height={windowmode ? '100%' : '250px'}
         />
         <div className="UIboard">
+          <div className="WindowMode Btn" onClick={() => changeWindow()}>
+            {windowmode ? '⇘' : '⇖'}
+          </div>
           <div className="CloseBtn Btn" onClick={() => hangUp()}>
             ✖
           </div>
-          <div className="WindowMode Btn" onClick={() => changeMode(!windowmode)}>
-            {windowmode ? '⇘' : '⇖'}
+          <div className="StopHost Btn" onClick={() => (props.partnerMethod ? props.partnerMethod() : null)}>
+            👤
           </div>
         </div>
       </div>
@@ -107,7 +127,7 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
           transition: 0.5s;
         }
         .CloseBtn {
-          margin: 0 10px 0 0;
+          margin: 0 10px 0 10px;
           background-color: #e74c3c;
         }
         .CloseBtn:hover {
@@ -116,8 +136,17 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
         .WindowMode {
           background-color: #34495e;
         }
+        .StopHost {
+          background-color: #34495e;
+        }
         .WindowMode:hover {
           background-color: #2c3e50;
+        }
+        @media screen and (max-width: 480px) {
+          .CallDisp {
+            width: ${windowmode ? '100%' : '45%'};
+            height: ${windowmode ? '100vh' : '120px'};
+          }
         }
       `}</style>
     </React.Fragment>

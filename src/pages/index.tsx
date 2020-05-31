@@ -122,6 +122,7 @@ const IndexPage: NextPage = () => {
       <style jsx global>{`
         body {
           margin: 0px;
+          font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
         }
       `}</style>
     </React.Fragment>
