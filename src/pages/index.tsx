@@ -17,6 +17,7 @@ import Head from 'next/head'
 import { Button } from '../components/Atoms/Button'
 import { Provider } from 'react-redux'
 import { CallDisp } from '../components/Moles/CallDisp'
+import { TopLayout } from '../components/Moles/TopLayout'
 
 const IndexPage: NextPage = () => {
   const [own_videosrc, setOwn] = React.useState<MediaStream | null>(null)
@@ -91,7 +92,21 @@ const IndexPage: NextPage = () => {
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
-        <CallDisp Partner_mc={Partner_mc} own_videosrc={own_videosrc} partner_videosrc={partner_videosrc} display={own_videosrc != null ? true : false} />
+        <TopLayout
+          color="#04AA84"
+          thema="高齢者向けビデオ通話サービス"
+          isPartner={false}
+          callMethod={tryCall}
+          bgc="#fff"
+        >
+          今日はどんな１日だった？
+        </TopLayout>
+        <CallDisp
+          Partner_mc={Partner_mc}
+          own_videosrc={own_videosrc}
+          partner_videosrc={partner_videosrc}
+          display={own_videosrc != null ? true : false}
+        />
         <button onClick={() => tryCall()}>Call</button>
         <Link href={{ pathname: '/TestPage', query: { name: 'Amano' } }} as="/Amano/TestPage">
           <a>
@@ -104,6 +119,11 @@ const IndexPage: NextPage = () => {
           </a>
         </Link>
       </Provider>
+      <style jsx global>{`
+        body {
+          margin: 0px;
+        }
+      `}</style>
     </React.Fragment>
   )
 }

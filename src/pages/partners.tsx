@@ -12,6 +12,7 @@ import { Button } from '../components/Atoms/Button'
 import { Provider } from 'react-redux'
 import store from '../store'
 import { resolve } from 'dns'
+import { TopLayout } from '../components/Moles/TopLayout'
 
 const PartnersPage: NextPage = () => {
   const [own_videosrc, setOwn] = React.useState<MediaStream | null>(null)
@@ -80,18 +81,34 @@ const PartnersPage: NextPage = () => {
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
-        <div>
-          改善版
-          <CallDisp Partner_mc={Partner_mc} own_videosrc={own_videosrc} partner_videosrc={partner_videosrc} display={own_videosrc != null ? true : false} />
-          <button onClick={() => testAdd()}>待機</button>
-          <button onClick={() => stopHost()}>中止</button>
-        </div>
+        <TopLayout
+          thema="リンジン公式パートナーサービス"
+          color="#fff"
+          isPartner={true}
+          callMethod={testAdd}
+          bgc="#22a6b3"
+        >
+          あなたは親愛なる隣人です
+        </TopLayout>
+        <CallDisp
+          Partner_mc={Partner_mc}
+          own_videosrc={own_videosrc}
+          partner_videosrc={partner_videosrc}
+          display={own_videosrc != null ? true : false}
+        />
+        <button onClick={() => testAdd()}>待機</button>
+        <button onClick={() => stopHost()}>中止</button>
         <Link href={{ pathname: '/' }}>
           <a>
             <Button color="#fff" backcolor="#f00" value="コールズ" />
           </a>
         </Link>
       </Provider>
+      <style jsx global>{`
+        body {
+          margin: 0px;
+        }
+      `}</style>
     </React.Fragment>
   )
 }
