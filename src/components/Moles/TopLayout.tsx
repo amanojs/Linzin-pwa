@@ -18,7 +18,7 @@ export const TopLayout: React.FC<OwnProps> = (props) => {
           <TellWord color={props.color} thema={props.thema}>
             {props.children}
           </TellWord>
-          <div className="Logo">LOGO</div>
+          <div className="Logo"></div>
           <div className="Ui">
             <button className="CallBtn" onClick={() => props.callMethod()}>
               {props.isPartner ? '通話を募集する' : 'いますぐ話す'}
@@ -47,7 +47,10 @@ export const TopLayout: React.FC<OwnProps> = (props) => {
           width: 330px;
           height: 230px;
           margin: 40px auto 0 auto;
-          background-color: #eee;
+          background-color: ;
+          background-image: url(/handshake.png);
+          background-position: center;
+          background-size: cover;
           border-radius: 5px;
           color: #444;
           font-weight: bold;
