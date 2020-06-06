@@ -25,7 +25,7 @@ const PartnersPage: NextPage = () => {
     peer = startPeer()
     peer.on('error', (err: Error) => {
       alert('通信エラーが発生しました')
-      console.log('peer-error:' + err)
+      console.log('peerError:' + err)
     })
     return () => {}
   }, [])
@@ -53,7 +53,7 @@ const PartnersPage: NextPage = () => {
       })
       .catch(function(err: Error) {
         alert('カメラ、オーディオの使用を許可してください')
-        console.error('エラーだよ' + err)
+        console.error('deviceError:' + err)
       })
     return
   }
