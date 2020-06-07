@@ -107,12 +107,6 @@ const IndexPage: NextPage = () => {
           partner_videosrc={partner_videosrc}
           display={own_videosrc != null ? true : false}
         />
-        <button onClick={() => tryCall()}>Call</button>
-        <Link href={{ pathname: '/TestPage', query: { name: 'Amano' } }} as="/Amano/TestPage">
-          <a>
-            <Button color="#fff" backcolor="#555" value="テストボタン" />
-          </a>
-        </Link>
         <Link href={{ pathname: '/partners' }}>
           <a>
             <Button color="#fff" backcolor="#f00" value="パートナーズ" />
