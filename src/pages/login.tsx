@@ -6,6 +6,8 @@ import { FormCard } from '../components/FormCard'
 import { FormBody } from '../components/FormBody'
 
 const LoginPage: NextPage = () => {
+  const [email, setEmail] = React.useState<string>('')
+  const [pass, setPass] = React.useState<string>('')
   return (
     <React.Fragment>
       <FormBody>
@@ -14,8 +16,8 @@ const LoginPage: NextPage = () => {
           <h2 className="app_name">リンジン公式パートナー</h2>
         </div>
         <FormCard>
-          <InputText label="メールアドレス" />
-          <InputText label="パスワード" />
+          <InputText label="メールアドレス" value={email} changeEvent={setEmail} />
+          <InputText label="パスワード" value={pass} changeEvent={setPass} />
           <button className="button">ログイン</button>
         </FormCard>
         <button className="button outline">パスワードをお忘れの方はこちら</button>

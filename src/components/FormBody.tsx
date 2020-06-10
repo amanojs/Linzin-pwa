@@ -41,7 +41,7 @@ export const FormBody: React.FC = (props) => {
           @media screen and (max-height: 700px) {
             .form_body {
               box-sizing: border-box;
-              padding: 100px 0 0 0;
+              padding: 60px 0 0 0;
               align-items: flex-start;
             }
           }

@@ -1,5 +1,6 @@
 import firebase from 'firebase/app'
 import 'firebase/database'
+import 'firebase/storage'
 
 if (!firebase.apps.length) {
   firebase.initializeApp({
@@ -13,5 +14,5 @@ if (!firebase.apps.length) {
     measurementId: 'G-75628B088Y'
   })
 }
-
+export const storage = firebase.storage()
 export const db = firebase.database()

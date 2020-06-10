@@ -1,34 +1,125 @@
 import * as React from 'react'
 import next, { NextPage } from 'next'
+import axios from 'axios'
+import { storage } from '../plugins/firebase'
+import Link from 'next/link'
 import { FormBody } from '../components/FormBody'
 import { FormCard } from '../components/FormCard'
 import { InputText } from '../components/Atoms/InputText'
-import Link from 'next/link'
-import { url } from 'inspector'
 
 const RegisterPage: NextPage = () => {
+  const [email, setEmail] = React.useState<string>('')
+  const [pass, setPass] = React.useState<string>('')
+  const [pass_r, setPass_r] = React.useState<string>('')
   const [img_file, setImg] = React.useState<string | ArrayBuffer | null>()
+  const [up_file, setUp] = React.useState<Blob | ArrayBuffer | Uint8Array>()
+  const [errmsg, setErrmsg] = React.useState<string[]>([])
+  const [email_e, setEmail_e] = React.useState<boolean>(false)
+  const [pass_e, setPass_e] = React.useState<boolean>(false)
+  const [pass_r_e, setPass_r_e] = React.useState<boolean>(false)
+  const [upfile_e, setUpfile_e] = React.useState<boolean>(false)
+
   const file_types = ['image/jpeg', 'image/png', 'image/gif']
+
   const file_preview = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (e.target.files?.length) {
       if (file_types.indexOf(e.target.files[0].type) + 1) {
         const reader: FileReader = new FileReader()
-        const file: File = e.target.files[0]
-        reader.onload = (e) => setImg(reader.result)
+        const file: Blob = e.target.files[0]
+        setUp(e.target.files[0])
+        reader.onload = () => setImg(reader.result)
         reader.readAsDataURL(file)
         return
-      }
+      } else e.target.files = null
     }
-    alert('適切なファイルをアップロードしてください')
   }
+
+  const validateCheck = () => {
+    errmsg.length = 0
+    setEmail_e(false), setPass_e(false), setPass_r_e(false)
+    const PassPattern = /^[a-zA-Z]{8,20}$/
+    if (!email) {
+      errmsg.push('メールアドレスが未入力です')
+      setEmail_e(true)
+    }
+    if (!pass) {
+      errmsg.push('パスワードが未入力です')
+      setPass_e(true)
+    }
+    if (!PassPattern.test(pass) && pass) {
+      errmsg.push('適切なパスワードを入力してください')
+      setPass_e(true)
+    }
+    if (pass !== pass_r && PassPattern.test(pass) && pass) {
+      errmsg.push('パスワードが一致しません')
+      setPass_r_e(true)
+    }
+    if (!up_file) {
+      errmsg.push('適切なファイルを選択してください')
+      setUpfile_e(true)
+    }
+    if (errmsg.length === 0) {
+      register()
+    }
+  }
+
+  const fileUpload = () => {
+    return new Promise<string | false>((resolve) => {
+      const file_name = new Date().getTime().toString(16) + Math.floor(10 * Math.random()).toString(16)
+      const storageRef: firebase.storage.Reference = storage.ref()
+      if (up_file) {
+        const uploadTask = storageRef.child('idcard/' + file_name).put(up_file)
+        uploadTask.on(
+          'state_changed',
+          (snapshot: firebase.storage.UploadTaskSnapshot) => {
+            console.log('snapshot:', snapshot)
+          },
+          (error: Error) => {
+            console.log('error:', error)
+            resolve(false)
+          },
+          () => {
+            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL: string) => {
+              console.log('Faile avaiable:', downloadURL)
+              resolve(downloadURL)
+            })
+          }
+        )
+      }
+    })
+  }
+
+  const register = async () => {
+    const card_url: string | false = await fileUpload()
+    if (!card_url) return console.log('画像アップロードに失敗しました')
+    const result = await axios.post('http://localhost:23450/users', {
+      email: 'hoge@gmail.com',
+      pass: 'hogehoge',
+      card_url: card_url
+    })
+    if (!result) return console.log('エントリー処理に失敗しました')
+    alert('エントリーが完了しました')
+  }
+
   return (
     <React.Fragment>
       <FormBody>
-        <h2 className="page_name">リンジン公式パートナー登録</h2>
+        <h2 className="page_name">公式パートナーエントリー</h2>
         <FormCard>
-          <InputText label="メールアドレス" />
-          <InputText label="パスワード" />
-          <InputText label="パスワード(再入力)" />
+          {errmsg.map((msg: string, index: number) => {
+            return (
+              <div
+                className="error_msg"
+                key={index}
+                style={{ marginBottom: errmsg.length == index + 1 ? '10px' : '0' }}
+              >
+                {msg}
+              </div>
+            )
+          })}
+          <InputText label="メールアドレス" value={email} changeEvent={setEmail} error={email_e} />
+          <InputText label="パスワード(半角英数字、8~20字)" value={pass} changeEvent={setPass} error={pass_e} />
+          <InputText label="パスワード(再入力)" value={pass_r} changeEvent={setPass_r} error={pass_r_e} />
           <label className="idcard_label">身分証明証アップロード</label>
           <div className="preview" style={{ backgroundImage: img_file ? `url(${img_file})` : 'none' }}>
             <label className="file_label">
@@ -41,7 +132,9 @@ const RegisterPage: NextPage = () => {
               />
             </label>
           </div>
-          <button className="button">確認</button>
+          <button className="button" onClick={() => validateCheck()}>
+            確認
+          </button>
           <Link href="/login">
             <button className="button cancel">戻る</button>
           </Link>
@@ -61,6 +154,10 @@ const RegisterPage: NextPage = () => {
           color: #fff;
           font-weight: bold;
           font-size: 28px;
+        }
+        .error_msg {
+          color: #d63031;
+          font-size: 12px;
         }
         .button {
           width: 100px;
@@ -88,7 +185,7 @@ const RegisterPage: NextPage = () => {
           background-color: #efefef;
           background-size: cover;
           background-position: center;
-          border: 1.5px solid #ddd;
+          border: 1.5px solid #${upfile_e ? 'd63031' : 'ddd'};
           border-radius: 2px;
         }
         .idcard_label {
