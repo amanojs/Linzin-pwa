@@ -23,3 +23,6 @@ export const findDevices = async () => {
       })
   })
 }
+
+/* api endpoint */
+export const ApiEp = 'http://localhost:23450/'

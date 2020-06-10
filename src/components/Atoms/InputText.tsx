@@ -4,6 +4,7 @@ interface OwnProps {
   label: string
   value: string
   type?: 'text' | 'password'
+  disable?: boolean
   error?: boolean
   changeEvent(v: string): void
 }
@@ -15,6 +16,7 @@ export const InputText: React.FC<OwnProps> = (props) => {
       <input
         type={props.type}
         value={props.value}
+        disabled={props.disable}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.changeEvent(e.target.value)}
       />
       <style jsx>{`
@@ -40,5 +42,6 @@ export const InputText: React.FC<OwnProps> = (props) => {
 
 InputText.defaultProps = {
   type: 'text',
+  disable: false,
   error: false
 }
