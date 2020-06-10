@@ -48,7 +48,7 @@ const IndexPage: NextPage = () => {
         }
       })
     } catch (e) {
-      /* エラー処理(まだどうするか考えてない) */
+      /* エラー処理(まだどうするかきめてない) */
       alert('trycall error')
     }
     return

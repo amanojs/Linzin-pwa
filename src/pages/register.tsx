@@ -2,10 +2,12 @@ import * as React from 'react'
 import next, { NextPage } from 'next'
 import axios from 'axios'
 import { storage } from '../plugins/firebase'
+import { ApiEp } from '../globalvar'
 import Link from 'next/link'
 import { FormBody } from '../components/FormBody'
 import { FormCard } from '../components/FormCard'
 import { InputText } from '../components/Atoms/InputText'
+import { PopUp } from '../components/Moles/PopUp'
 
 const RegisterPage: NextPage = () => {
   const [email, setEmail] = React.useState<string>('')
@@ -18,6 +20,9 @@ const RegisterPage: NextPage = () => {
   const [pass_e, setPass_e] = React.useState<boolean>(false)
   const [pass_r_e, setPass_r_e] = React.useState<boolean>(false)
   const [upfile_e, setUpfile_e] = React.useState<boolean>(false)
+  const [checkpop, setCheckpop] = React.useState<boolean>(false)
+  const [donepop, setDonepop] = React.useState<boolean>(false)
+  const [register_flag, setResister_flag] = React.useState<boolean>(false)
 
   const file_types = ['image/jpeg', 'image/png', 'image/gif']
 
@@ -36,7 +41,7 @@ const RegisterPage: NextPage = () => {
 
   const validateCheck = () => {
     errmsg.length = 0
-    setEmail_e(false), setPass_e(false), setPass_r_e(false)
+    setEmail_e(false), setPass_e(false), setPass_r_e(false), setUpfile_e(false)
     const PassPattern = /^[a-zA-Z]{8,20}$/
     if (!email) {
       errmsg.push('メールアドレスが未入力です')
@@ -59,7 +64,7 @@ const RegisterPage: NextPage = () => {
       setUpfile_e(true)
     }
     if (errmsg.length === 0) {
-      register()
+      setCheckpop(true)
     }
   }
 
@@ -90,19 +95,71 @@ const RegisterPage: NextPage = () => {
   }
 
   const register = async () => {
+    if (!checkpop) return
+    setResister_flag(true)
+    const exist = await axios.get(ApiEp + 'users/' + email, {})
+    console.log(exist)
+    if (!exist) {
+      errmsg.push('既に登録されているメールアドレスです')
+      setEmail_e(true)
+      setCheckpop(false)
+      return
+    }
     const card_url: string | false = await fileUpload()
     if (!card_url) return console.log('画像アップロードに失敗しました')
-    const result = await axios.post('http://localhost:23450/awaitng', {
+    const result = await axios.post(ApiEp + 'awaitng', {
       email: email,
       pass: pass,
       card_url: card_url
     })
     if (!result) return console.log('エントリー処理に失敗しました')
-    alert('エントリーが完了しました')
+    setCheckpop(false)
+    setDonepop(true)
   }
 
   return (
     <React.Fragment>
+      <PopUp open_flg={checkpop}>
+        <div className="check_label">この内容でエントリーしてもよろしいですか？</div>
+        <InputText label="メールアドレス" disable={true} value={email} changeEvent={setEmail} />
+        <InputText
+          label="パスワード(ここでは表示できません)"
+          disable={true}
+          value={pass}
+          type="password"
+          changeEvent={setPass}
+        />
+        <label className="idcard_label">身分証明証アップロード</label>
+        <div className="preview" style={{ backgroundImage: img_file ? `url(${img_file})` : 'none' }}></div>
+        <button
+          className="button"
+          onClick={() => register()}
+          disabled={register_flag}
+          style={{ backgroundColor: register_flag ? '#eee' : '#22a6b3' }}
+        >
+          はい
+        </button>
+        <button className="button cancel" onClick={() => setCheckpop(false)}>
+          いいえ
+        </button>
+      </PopUp>
+
+      <PopUp open_flg={donepop}>
+        <div className="done_label">
+          エントリーが完了しました
+          <br />
+          審査に通り次第エントリーされたEメールに連絡させていただきます
+        </div>
+        <button
+          className="button"
+          onClick={() => {
+            location.href = '/login'
+          }}
+        >
+          はい
+        </button>
+      </PopUp>
+
       <FormBody>
         <h2 className="page_name">公式パートナーエントリー</h2>
         <FormCard>
@@ -227,6 +284,22 @@ const RegisterPage: NextPage = () => {
         #file {
           display: none;
         }
+        .check_label {
+          color: #444;
+          font-size: 16px;
+          font-weight: bold;
+          margin-bottom: 15px;
+        }
+        .done_label {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 200px;
+          font-size: 14px;
+          font-weight: bold;
+          color: #555;
+        }
         @media screen and (max-width: 480px) {
           .page_name {
             margin: 0 0 10px 0;
@@ -244,6 +317,9 @@ const RegisterPage: NextPage = () => {
           }
           .cancel {
             margin: 5px 0 0 0;
+          }
+          .check_label {
+            font-size: 14px;
           }
         }
       `}</style>
