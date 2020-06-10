@@ -107,7 +107,7 @@ const RegisterPage: NextPage = () => {
     }
     const card_url: string | false = await fileUpload()
     if (!card_url) return console.log('画像アップロードに失敗しました')
-    const result = await axios.post(ApiEp + 'awaitng', {
+    const result = await axios.post(ApiEp + 'awaiting', {
       email: email,
       pass: pass,
       card_url: card_url
