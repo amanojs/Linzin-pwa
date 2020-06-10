@@ -11,7 +11,6 @@ import Link from 'next/link'
 import { Button } from '../components/Atoms/Button'
 import { Provider } from 'react-redux'
 import store from '../store'
-import { resolve } from 'dns'
 import { TopLayout } from '../components/Moles/TopLayout'
 
 const PartnersPage: NextPage = () => {
@@ -97,8 +96,6 @@ const PartnersPage: NextPage = () => {
           display={own_videosrc != null ? true : false}
           partnerMethod={stopHost}
         />
-        <button onClick={() => testAdd()}>待機</button>
-        <button onClick={() => stopHost()}>中止</button>
         <Link href={{ pathname: '/' }}>
           <a>
             <Button color="#fff" backcolor="#f00" value="コールズ" />
