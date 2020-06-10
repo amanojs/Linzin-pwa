@@ -3,6 +3,7 @@ import * as React from 'react'
 interface OwnProps {
   label: string
   value: string
+  type?: 'text' | 'password'
   error?: boolean
   changeEvent(v: string): void
 }
@@ -12,7 +13,7 @@ export const InputText: React.FC<OwnProps> = (props) => {
     <React.Fragment>
       <h2>{props.label}</h2>
       <input
-        type="text"
+        type={props.type}
         value={props.value}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) => props.changeEvent(e.target.value)}
       />
@@ -38,5 +39,6 @@ export const InputText: React.FC<OwnProps> = (props) => {
 }
 
 InputText.defaultProps = {
+  type: 'text',
   error: false
 }

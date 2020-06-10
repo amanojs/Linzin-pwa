@@ -22,7 +22,7 @@ const LoginPage: NextPage = () => {
         </FormCard>
         <button className="button outline">パスワードをお忘れの方はこちら</button>
         <Link href={{ pathname: '/register' }}>
-          <button className="button outline">公式パートナー登録</button>
+          <button className="button outline">公式パートナーエントリー</button>
         </Link>
       </FormBody>
       <style jsx global>{`

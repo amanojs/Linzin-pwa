@@ -92,9 +92,9 @@ const RegisterPage: NextPage = () => {
   const register = async () => {
     const card_url: string | false = await fileUpload()
     if (!card_url) return console.log('画像アップロードに失敗しました')
-    const result = await axios.post('http://localhost:23450/users', {
-      email: 'hoge@gmail.com',
-      pass: 'hogehoge',
+    const result = await axios.post('http://localhost:23450/awaitng', {
+      email: email,
+      pass: pass,
       card_url: card_url
     })
     if (!result) return console.log('エントリー処理に失敗しました')
@@ -118,8 +118,20 @@ const RegisterPage: NextPage = () => {
             )
           })}
           <InputText label="メールアドレス" value={email} changeEvent={setEmail} error={email_e} />
-          <InputText label="パスワード(半角英数字、8~20字)" value={pass} changeEvent={setPass} error={pass_e} />
-          <InputText label="パスワード(再入力)" value={pass_r} changeEvent={setPass_r} error={pass_r_e} />
+          <InputText
+            label="パスワード(半角英数字、8~20字)"
+            value={pass}
+            type="password"
+            changeEvent={setPass}
+            error={pass_e}
+          />
+          <InputText
+            label="パスワード(再入力)"
+            value={pass_r}
+            type="password"
+            changeEvent={setPass_r}
+            error={pass_r_e}
+          />
           <label className="idcard_label">身分証明証アップロード</label>
           <div className="preview" style={{ backgroundImage: img_file ? `url(${img_file})` : 'none' }}>
             <label className="file_label">
