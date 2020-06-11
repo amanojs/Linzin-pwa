@@ -4,10 +4,28 @@ import Link from 'next/link'
 import { InputText } from '../components/Atoms/InputText'
 import { FormCard } from '../components/FormCard'
 import { FormBody } from '../components/FormBody'
+import { ApiEp } from '../globalvar'
+import axios from 'axios'
 
 const LoginPage: NextPage = () => {
   const [email, setEmail] = React.useState<string>('')
   const [pass, setPass] = React.useState<string>('')
+  const [errmsg, setErrmsg] = React.useState<string>('')
+  const [proc, setProc] = React.useState<boolean>(false)
+
+  const login = async () => {
+    if (proc) return
+    setProc(true)
+    const result = await axios.post(ApiEp + 'login', { email: email, pass: pass })
+    if (result.data) {
+      const key = result.data
+      alert('ログイン成功')
+      return
+    }
+    setErrmsg('メールアドレス、またはパスワードに誤りがあります')
+    setProc(false)
+  }
+
   return (
     <React.Fragment>
       <FormBody>
@@ -16,9 +34,17 @@ const LoginPage: NextPage = () => {
           <h2 className="app_name">リンジン公式パートナー</h2>
         </div>
         <FormCard>
+          {errmsg && <div className="error_msg">{errmsg}</div>}
           <InputText label="メールアドレス" value={email} changeEvent={setEmail} />
           <InputText label="パスワード" value={pass} changeEvent={setPass} />
-          <button className="button">ログイン</button>
+          <button
+            className="button"
+            onClick={() => login()}
+            style={{ backgroundColor: proc ? '#eee' : '#22a6b3' }}
+            disabled={proc}
+          >
+            ログイン
+          </button>
         </FormCard>
         <button className="button outline">パスワードをお忘れの方はこちら</button>
         <Link href={{ pathname: '/register' }}>
@@ -39,6 +65,11 @@ const LoginPage: NextPage = () => {
           color: #fff;
           font-weight: bold;
           font-size: 32px;
+        }
+        .error_msg {
+          margin-bottom: 10px;
+          color: #d63031;
+          font-size: 12px;
         }
         .button {
           width: 100px;
