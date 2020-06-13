@@ -1,11 +1,12 @@
 import * as React from 'react'
-import next, { NextPage } from 'next'
+import next, { NextPage, NextPageContext } from 'next'
 import Link from 'next/link'
 import { InputText } from '../components/Atoms/InputText'
 import { FormCard } from '../components/FormCard'
 import { FormBody } from '../components/FormBody'
+import axios, { AxiosResponse } from 'axios'
+import Cookies from 'universal-cookie'
 import { ApiEp } from '../globalvar'
-import axios from 'axios'
 
 const LoginPage: NextPage = () => {
   const [email, setEmail] = React.useState<string>('')
@@ -19,6 +20,8 @@ const LoginPage: NextPage = () => {
     const result = await axios.post(ApiEp + 'login', { email: email, pass: pass })
     if (result.data) {
       const key = result.data
+      const cookies = new Cookies()
+      cookies.set('linzinRSA', key)
       alert('ログイン成功')
       return
     }
@@ -108,6 +111,18 @@ const LoginPage: NextPage = () => {
       `}</style>
     </React.Fragment>
   )
+}
+
+import { partnerCheck } from '../globalvar'
+LoginPage.getInitialProps = async (context: NextPageContext) => {
+  if (context.req && context.res) {
+    const result: AxiosResponse | false = await partnerCheck(context.req)
+    if (result) {
+      context.res.writeHead(302, { Location: '/partners' })
+      context.res.end()
+    }
+  }
+  return {}
 }
 
 export default LoginPage

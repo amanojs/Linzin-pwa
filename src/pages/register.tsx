@@ -204,9 +204,9 @@ const RegisterPage: NextPage = () => {
           <button className="button" onClick={() => validateCheck()}>
             確認
           </button>
-          <Link href="/login">
+          <a href="/login">
             <button className="button cancel">戻る</button>
-          </Link>
+          </a>
         </FormCard>
       </FormBody>
       <style jsx global>{`

@@ -107,11 +107,9 @@ const IndexPage: NextPage = () => {
           partner_videosrc={partner_videosrc}
           display={own_videosrc != null ? true : false}
         />
-        <Link href={{ pathname: '/partners' }}>
-          <a>
-            <Button color="#fff" backcolor="#f00" value="パートナーズ" />
-          </a>
-        </Link>
+        <a href="/partners">
+          <Button color="#fff" backcolor="#f00" value="パートナーズ" />
+        </a>
       </Provider>
       <style jsx global>{`
         body {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import next, { NextPage } from 'next'
+import next, { NextPage, NextPageContext } from 'next'
 import * as PeerType from 'skyway-js/skyway-js'
 import { startPeer } from '../plugins/skyway'
 import { db } from '../plugins/firebase'
@@ -72,6 +72,8 @@ const PartnersPage: NextPage = () => {
     })
   }
 
+  const logout = () => {}
+
   return (
     <React.Fragment>
       <Head>
@@ -80,6 +82,7 @@ const PartnersPage: NextPage = () => {
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
+        <button className="logout_btn">ログアウト</button>
         <TopLayout
           thema="リンジン公式パートナーサービス"
           color="#fff"
@@ -108,8 +111,30 @@ const PartnersPage: NextPage = () => {
           font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
         }
       `}</style>
+      <style jsx>{`
+        .logout_btn {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          width: 100px;
+          height: 30px;
+        }
+      `}</style>
     </React.Fragment>
   )
+}
+
+import { partnerCheck } from '../globalvar'
+import { AxiosResponse } from 'axios'
+PartnersPage.getInitialProps = async (context: NextPageContext) => {
+  if (context.req && context.res) {
+    const result: AxiosResponse | false = await partnerCheck(context.req)
+    if (!result) {
+      context.res.writeHead(302, { Location: '/login' })
+      context.res.end()
+    }
+  }
+  return {}
 }
 
 export default PartnersPage
