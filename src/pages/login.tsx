@@ -22,7 +22,7 @@ const LoginPage: NextPage = () => {
       const key = result.data
       const cookies = new Cookies()
       cookies.set('linzinRSA', key)
-      alert('ログイン成功')
+      location.href = '/partners'
       return
     }
     setErrmsg('メールアドレス、またはパスワードに誤りがあります')

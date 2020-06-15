@@ -72,7 +72,12 @@ const PartnersPage: NextPage = () => {
     })
   }
 
-  const logout = () => {}
+  const logout = () => {
+    console.log('logout')
+    const cookies = new Cookies()
+    cookies.remove('linzinRSA')
+    location.href = '/login'
+  }
 
   return (
     <React.Fragment>
@@ -82,7 +87,9 @@ const PartnersPage: NextPage = () => {
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
-        <button className="logout_btn">ログアウト</button>
+        <button className="logout_btn" onClick={() => logout()}>
+          ログアウト
+        </button>
         <TopLayout
           thema="リンジン公式パートナーサービス"
           color="#fff"
@@ -124,8 +131,10 @@ const PartnersPage: NextPage = () => {
   )
 }
 
+import Cookies from 'universal-cookie'
 import { partnerCheck } from '../globalvar'
 import { AxiosResponse } from 'axios'
+import { ServerResponse } from 'http'
 PartnersPage.getInitialProps = async (context: NextPageContext) => {
   if (context.req && context.res) {
     const result: AxiosResponse | false = await partnerCheck(context.req)

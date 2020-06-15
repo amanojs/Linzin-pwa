@@ -33,19 +33,21 @@ export const partnerCheck = (req: IncomingMessage) => {
   return new Promise<AxiosResponse | false>(async (resolve) => {
     const cookies = new Cookies(req.headers.cookie)
     const key = cookies.get('linzinRSA')
+    console.log(key)
     if (!key) {
-      console.log('クッキーがありません')
-      resolve(false)
+      console.log('ログイン状態ではありません')
+      return resolve(false)
     }
     console.log('今からaxios', key)
     const result = await axios.post(ApiEp + 'checkPartner', { key: key })
     console.log('axiosからきた')
-    if (!result) {
+    console.log('axiosからとってきた', result.data)
+    if (!result.data) {
       console.log('セッションデータとの照合に失敗しました')
       cookies.set('linzinRSA', null)
-      resolve(false)
+      return resolve(false)
     }
-    resolve(result)
+    return resolve(result)
   })
 }
 
