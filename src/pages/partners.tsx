@@ -13,7 +13,11 @@ import { Provider } from 'react-redux'
 import store from '../store'
 import { TopLayout } from '../components/Moles/TopLayout'
 
-const PartnersPage: NextPage = () => {
+interface OwnProps {
+  email?: string
+}
+
+const PartnersPage: NextPage<OwnProps> = (props) => {
   const [own_videosrc, setOwn] = React.useState<MediaStream | null>(null)
   const [partner_videosrc, setPartner] = React.useState<MediaStream | null>(null)
   const [Partner_mc, setMc] = React.useState<PeerType.MediaConnection | null>(null)
@@ -30,8 +34,9 @@ const PartnersPage: NextPage = () => {
   }, [])
 
   const testAdd = async () => {
+    if (props.email == undefined) return
     myid = new Date().getTime().toString(16) + Math.floor(10 * Math.random()).toString(16)
-    const data: WaitingRoom = { userid: myid, peerid: peer.id }
+    const data: WaitingRoom = { userid: myid, email: props.email, peerid: peer.id }
     const result = await findDevices()
     if (!result.video || !result.audio) return alert('使用可能なカメラ、またはマイクを接続してください')
     navigator.mediaDevices
@@ -134,16 +139,18 @@ const PartnersPage: NextPage = () => {
 import Cookies from 'universal-cookie'
 import { partnerCheck } from '../globalvar'
 import { AxiosResponse } from 'axios'
-import { ServerResponse } from 'http'
 PartnersPage.getInitialProps = async (context: NextPageContext) => {
+  let email
   if (context.req && context.res) {
-    const result: AxiosResponse | false = await partnerCheck(context.req)
-    if (!result) {
+    let result: AxiosResponse | false = await partnerCheck(context.req)
+    if (result == false) {
       context.res.writeHead(302, { Location: '/login' })
       context.res.end()
+      return {}
     }
+    email = result.data
   }
-  return {}
+  return { email: email }
 }
 
 export default PartnersPage
