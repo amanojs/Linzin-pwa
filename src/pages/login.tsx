@@ -39,7 +39,7 @@ const LoginPage: NextPage = () => {
         <FormCard>
           {errmsg && <div className="error_msg">{errmsg}</div>}
           <InputText label="メールアドレス" value={email} changeEvent={setEmail} />
-          <InputText label="パスワード" value={pass} changeEvent={setPass} />
+          <InputText label="パスワード" value={pass} type="password" changeEvent={setPass} />
           <button
             className="button"
             onClick={() => login()}
