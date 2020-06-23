@@ -100,6 +100,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
   return (
     <React.Fragment>
       <Head>
+        <title>リンジン -公式パートナーズページ-</title>
         <meta
           name="viewport"
           content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
