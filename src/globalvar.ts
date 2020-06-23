@@ -52,4 +52,5 @@ export const partnerCheck = (req: IncomingMessage) => {
 }
 
 /* api endpoint */
-export const ApiEp = 'http://localhost:23450/'
+export const ApiEp = 'https://linzin.net/'
+//http://localhost:23450/
