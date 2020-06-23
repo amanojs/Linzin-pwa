@@ -1,5 +1,6 @@
 import * as React from 'react'
 import next, { NextPage, NextPageContext } from 'next'
+import Head from 'next/head'
 import Link from 'next/link'
 import { InputText } from '../components/Atoms/InputText'
 import { FormCard } from '../components/FormCard'
@@ -31,6 +32,12 @@ const LoginPage: NextPage = () => {
 
   return (
     <React.Fragment>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+        />
+      </Head>
       <FormBody>
         <div>
           <div className="logo"></div>

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import Head from 'next/head'
 import next, { NextPage } from 'next'
 import axios from 'axios'
 import { storage } from '../plugins/firebase'
@@ -119,6 +120,12 @@ const RegisterPage: NextPage = () => {
 
   return (
     <React.Fragment>
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+        />
+      </Head>
       <PopUp open_flg={checkpop}>
         <div className="check_label">この内容でエントリーしてもよろしいですか？</div>
         <InputText label="メールアドレス" disable={true} value={email} changeEvent={setEmail} />

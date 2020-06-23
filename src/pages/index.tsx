@@ -87,6 +87,10 @@ const IndexPage: NextPage = () => {
   return (
     <React.Fragment>
       <Head>
+        <meta
+          name="viewport"
+          content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
+        />
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/images/icons/icon-192x192.png" sizes="192x192" />
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
