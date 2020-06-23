@@ -15,6 +15,11 @@ const LoginPage: NextPage = () => {
   const [errmsg, setErrmsg] = React.useState<string>('')
   const [proc, setProc] = React.useState<boolean>(false)
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    login()
+  }
+
   const login = async () => {
     if (proc) return
     setProc(true)
@@ -28,6 +33,7 @@ const LoginPage: NextPage = () => {
     }
     setErrmsg('メールアドレス、またはパスワードに誤りがあります')
     setProc(false)
+    return
   }
 
   return (
@@ -44,17 +50,19 @@ const LoginPage: NextPage = () => {
           <h2 className="app_name">リンジン公式パートナー</h2>
         </div>
         <FormCard>
-          {errmsg && <div className="error_msg">{errmsg}</div>}
-          <InputText label="メールアドレス" value={email} changeEvent={setEmail} />
-          <InputText label="パスワード" value={pass} type="password" changeEvent={setPass} />
-          <button
-            className="button"
-            onClick={() => login()}
-            style={{ backgroundColor: proc ? '#eee' : '#22a6b3' }}
-            disabled={proc}
-          >
-            ログイン
-          </button>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            {errmsg && <div className="error_msg">{errmsg}</div>}
+            <InputText label="メールアドレス" value={email} changeEvent={setEmail} />
+            <InputText label="パスワード" value={pass} type="password" changeEvent={setPass} />
+            <button
+              className="button"
+              type="submit"
+              style={{ backgroundColor: proc ? '#eee' : '#22a6b3' }}
+              disabled={proc}
+            >
+              ログイン
+            </button>
+          </form>
         </FormCard>
         <button className="button outline">パスワードをお忘れの方はこちら</button>
         <Link href={{ pathname: '/register' }}>

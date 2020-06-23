@@ -40,6 +40,11 @@ const RegisterPage: NextPage = () => {
     }
   }
 
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    validateCheck()
+  }
+
   const validateCheck = () => {
     errmsg.length = 0
     setEmail_e(false), setPass_e(false), setPass_r_e(false), setUpfile_e(false)
@@ -170,50 +175,54 @@ const RegisterPage: NextPage = () => {
       <FormBody>
         <h2 className="page_name">公式パートナーエントリー</h2>
         <FormCard>
-          {errmsg.map((msg: string, index: number) => {
-            return (
-              <div
-                className="error_msg"
-                key={index}
-                style={{ marginBottom: errmsg.length == index + 1 ? '10px' : '0' }}
-              >
-                {msg}
-              </div>
-            )
-          })}
-          <InputText label="メールアドレス" value={email} changeEvent={setEmail} error={email_e} />
-          <InputText
-            label="パスワード(半角英数字、8~20字)"
-            value={pass}
-            type="password"
-            changeEvent={setPass}
-            error={pass_e}
-          />
-          <InputText
-            label="パスワード(再入力)"
-            value={pass_r}
-            type="password"
-            changeEvent={setPass_r}
-            error={pass_r_e}
-          />
-          <label className="idcard_label">身分証明証アップロード</label>
-          <div className="preview" style={{ backgroundImage: img_file ? `url(${img_file})` : 'none' }}>
-            <label className="file_label">
-              <img src="/images/imageicon.png" alt="image icon" />
-              <input
-                type="file"
-                id="file"
-                accept={file_types.join()}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => file_preview(e)}
-              />
-            </label>
-          </div>
-          <button className="button" onClick={() => validateCheck()}>
-            確認
-          </button>
-          <a href="/login">
-            <button className="button cancel">戻る</button>
-          </a>
+          <form onSubmit={(e) => handleSubmit(e)}>
+            {errmsg.map((msg: string, index: number) => {
+              return (
+                <div
+                  className="error_msg"
+                  key={index}
+                  style={{ marginBottom: errmsg.length == index + 1 ? '10px' : '0' }}
+                >
+                  {msg}
+                </div>
+              )
+            })}
+            <InputText label="メールアドレス" value={email} changeEvent={setEmail} error={email_e} />
+            <InputText
+              label="パスワード(半角英数字、8~20字)"
+              value={pass}
+              type="password"
+              changeEvent={setPass}
+              error={pass_e}
+            />
+            <InputText
+              label="パスワード(再入力)"
+              value={pass_r}
+              type="password"
+              changeEvent={setPass_r}
+              error={pass_r_e}
+            />
+            <label className="idcard_label">身分証明証アップロード</label>
+            <div className="preview" style={{ backgroundImage: img_file ? `url(${img_file})` : 'none' }}>
+              <label className="file_label">
+                <img src="/images/imageicon.png" alt="image icon" />
+                <input
+                  type="file"
+                  id="file"
+                  accept={file_types.join()}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => file_preview(e)}
+                />
+              </label>
+            </div>
+            <button className="button" type="submit">
+              確認
+            </button>
+            <a href="/login">
+              <button type="button" className="button cancel">
+                戻る
+              </button>
+            </a>
+          </form>
         </FormCard>
       </FormBody>
       <style jsx global>{`
