@@ -92,9 +92,12 @@ const IndexPage: NextPage = () => {
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
+        <a href="/partners" className="toPartners">
+          パートナーズページ
+        </a>
         <TopLayout
           color="#04AA84"
-          thema="高齢者向けビデオ通話サービス"
+          thema="高齢者向けビデオ通話サービス【リンジン】"
           isPartner={false}
           callMethod={tryCall}
           bgc="#fff"
@@ -107,14 +110,26 @@ const IndexPage: NextPage = () => {
           partner_videosrc={partner_videosrc}
           display={own_videosrc != null ? true : false}
         />
-        <a href="/partners">
-          <Button color="#fff" backcolor="#f00" value="パートナーズ" />
-        </a>
       </Provider>
       <style jsx global>{`
         body {
           margin: 0px;
           font-family: 'Hiragino Kaku Gothic ProN', 'メイリオ', sans-serif;
+        }
+      `}</style>
+      <style jsx>{`
+        .toPartners {
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          color: #fff;
+          text-decoration: none;
+          font-size: 14px;
+          font-weight: bold;
+          letter-spacing: 0px;
+          padding: 5px;
+          background-color: #21a6b3;
+          border-radius: 2px;
         }
       `}</style>
     </React.Fragment>
