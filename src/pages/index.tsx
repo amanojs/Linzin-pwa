@@ -62,6 +62,7 @@ const IndexPage: NextPage = () => {
       .then((stream: MediaStream) => {
         setOwn(stream)
         const mediaConnection = peer.call(partnerinfo.peerid, stream)
+        db.ref(waitingroom + '/' + partnerinfo.userid).remove()
         mediaConnection.once('close', () => {
           alert('通話が終了されました')
           setPartner(null)
@@ -73,7 +74,6 @@ const IndexPage: NextPage = () => {
         console.error(error)
         return
       })
-    db.ref(waitingroom + '/' + partnerinfo.userid).remove()
   }
 
   /* リモートストリームをvideoに設定 */

@@ -44,6 +44,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
       .then(function(stream: MediaStream) {
         setOwn(stream)
         db.ref(waitingroom + '/' + myid).set(data)
+        console.log('データ挿入しました')
         peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
           db.ref(runroom + '/' + myid + '/' + myid).set(data)
           mediaConnection.answer(stream)
