@@ -43,6 +43,7 @@ const LoginPage: NextPage = () => {
           name="viewport"
           content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"
         />
+        <link rel="shortcut icon" href="/images/favicon.ico" />
       </Head>
       <FormBody>
         <div>
