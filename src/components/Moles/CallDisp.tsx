@@ -7,6 +7,7 @@ interface OwnProps {
   partner_videosrc: MediaStream | null
   Partner_mc: PeerType.MediaConnection | null
   display: boolean
+  setCallPop: React.Dispatch<React.SetStateAction<boolean>>
   partnerMethod?(): void
 }
 
@@ -33,8 +34,7 @@ export const CallDisp: React.FC<OwnProps> = (props) => {
   const hangUp = () => {
     if (!props.Partner_mc) return
     props.Partner_mc.close(true)
-    alert('通話を終了しました')
-    location.reload()
+    props.setCallPop(true)
   }
 
   /* ウィンドウモード変更 */

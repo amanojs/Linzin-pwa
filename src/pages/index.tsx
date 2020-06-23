@@ -18,17 +18,23 @@ import { Button } from '../components/Atoms/Button'
 import { Provider } from 'react-redux'
 import { CallDisp } from '../components/Moles/CallDisp'
 import { TopLayout } from '../components/Moles/TopLayout'
+import { PopUp } from '../components/Moles/PopUp'
 
 const IndexPage: NextPage = () => {
   const [own_videosrc, setOwn] = React.useState<MediaStream | null>(null)
   const [partner_videosrc, setPartner] = React.useState<MediaStream | null>(null)
   const [Partner_mc, setMc] = React.useState<PeerType.MediaConnection | null>(null)
+  const [errpop, setErrPop] = React.useState<boolean>(false)
+  const [errmsg, setErrMsg] = React.useState<string>('')
+  const [callpop, setCallpop] = React.useState<boolean>(false)
+  const [waitmode, setWait] = React.useState<boolean>(false)
 
   var peer: PeerType.default
   React.useEffect(() => {
     peer = startPeer()
     peer.on('error', (err: Error) => {
-      alert('通信エラーが発生しました')
+      setErrMsg('peer通信に問題が発生しました')
+      setErrPop(true)
       console.log('peer-error:' + err)
     })
     return () => {}
@@ -36,20 +42,32 @@ const IndexPage: NextPage = () => {
 
   /* パートナー検索 */
   const tryCall = async () => {
+    if (waitmode) return
     const result = await findDevices()
-    if (!result.video || !result.audio) return alert('使用可能なカメラ、またはマイクを接続してください')
+    if (!result.video || !result.audio) {
+      setErrMsg('使用可能なカメラ、またはマイクを接続してください')
+      setErrPop(true)
+      return
+    }
     try {
+      setWait(true)
       const fb = db.ref(waitingroom)
       fb.once('child_added').then((snapshot) => {
+        console.log('snapshot', snapshot.val())
         if (snapshot.val()) {
           const partnerinfo: WaitingRoom = snapshot.val()
           console.log('パートナー情報:', partnerinfo)
           connectPartner(partnerinfo)
+        } else {
+          console.log('通話待機中のパートナーがいません。時間をおいてもう一度お試しください。')
+          setErrMsg('通話待機中のパートナーがいません。時間をおいてもう一度お試しください。')
+          setErrPop(true)
+          return
         }
       })
     } catch (e) {
-      /* エラー処理(まだどうするかきめてない) */
       alert('trycall error')
+      throw e
     }
     return
   }
@@ -64,9 +82,8 @@ const IndexPage: NextPage = () => {
         const mediaConnection = peer.call(partnerinfo.peerid, stream)
         db.ref(waitingroom + '/' + partnerinfo.userid).remove()
         mediaConnection.once('close', () => {
-          alert('通話が終了されました')
+          setCallpop(true)
           setPartner(null)
-          location.reload()
         })
         setEventListener(mediaConnection)
       })
@@ -99,11 +116,37 @@ const IndexPage: NextPage = () => {
         <a href="/partners" className="toPartners">
           パートナーズページ
         </a>
+
+        <PopUp open_flg={errpop}>
+          <div className="done_label">{errmsg}</div>
+          <button
+            className="button"
+            onClick={() => {
+              location.reload()
+            }}
+          >
+            はい
+          </button>
+        </PopUp>
+
+        <PopUp open_flg={callpop}>
+          <div className="done_label">通話が終了されました</div>
+          <button
+            className="button"
+            onClick={() => {
+              location.reload()
+            }}
+          >
+            閉じる
+          </button>
+        </PopUp>
+
         <TopLayout
           color="#04AA84"
           thema="高齢者向けビデオ通話サービス【リンジン】"
           isPartner={false}
           callMethod={tryCall}
+          wait={waitmode}
           bgc="#fff"
         >
           今日はどんな１日だった？
@@ -112,6 +155,7 @@ const IndexPage: NextPage = () => {
           Partner_mc={Partner_mc}
           own_videosrc={own_videosrc}
           partner_videosrc={partner_videosrc}
+          setCallPop={setCallpop}
           display={own_videosrc != null ? true : false}
         />
       </Provider>
@@ -134,6 +178,34 @@ const IndexPage: NextPage = () => {
           padding: 5px;
           background-color: #21a6b3;
           border-radius: 2px;
+        }
+        .done_label {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 100%;
+          height: 200px;
+          font-size: 14px;
+          font-weight: bold;
+          color: #555;
+        }
+        .button {
+          width: 100px;
+          padding: 9px;
+          color: #fff;
+          font-size: 9px;
+          font-weight: bold;
+          border: 0px solid #000;
+          border-radius: 2px;
+          background-color: #22a6b3;
+          cursor: pointer;
+          outline: none;
+        }
+        @media screen and (max-width: 480px) {
+          .button {
+            width: 100%;
+            margin: 0;
+          }
         }
       `}</style>
     </React.Fragment>

@@ -8,6 +8,7 @@ interface OwnProps {
   isPartner: boolean
   bgc: string
   callMethod(): void
+  wait: boolean
 }
 
 export const TopLayout: React.FC<OwnProps> = (props) => {
@@ -22,6 +23,7 @@ export const TopLayout: React.FC<OwnProps> = (props) => {
           <div className="Ui">
             <button className="CallBtn" onClick={() => props.callMethod()}>
               {props.isPartner ? '通話を募集する' : 'いますぐ話す'}
+              {props.wait ? '|待機中...' : ''}
             </button>
             <p>▲クリックでビデオ通話{props.isPartner ? '募集' : '開始'}</p>
           </div>
@@ -63,14 +65,15 @@ export const TopLayout: React.FC<OwnProps> = (props) => {
         .CallBtn {
           width: 100%;
           padding: 30px;
-          color: ${props.bgc};
+          color: ${props.wait ? '#fff' : props.bgc};
           font-size: 20px;
           font-weight: bold;
           border: 0 solid #fff;
-          background-color: ${props.color};
+          background-color: ${props.wait ? '#999' : props.color};
           border-radius: 60px;
           cursor: pointer;
           outline: 0;
+          transition: 0.2s;
         }
         .Ui p {
           text-align: center;
