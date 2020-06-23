@@ -51,17 +51,22 @@ const IndexPage: NextPage = () => {
     }
     try {
       setWait(true)
+      let partnerinfo: WaitingRoom | null = null
       const fb = db.ref(waitingroom)
-      fb.once('child_added').then((snapshot) => {
+      fb.on('child_added', (snapshot) => {
         console.log('snapshot', snapshot.val())
+        console.log(snapshot.val())
         if (snapshot.val()) {
-          const partnerinfo: WaitingRoom = snapshot.val()
+          partnerinfo = snapshot.val()
           console.log('パートナー情報:', partnerinfo)
-          connectPartner(partnerinfo)
+          if (partnerinfo != null) connectPartner(partnerinfo)
+          fb.off()
+          return
         } else {
           console.log('通話待機中のパートナーがいません。時間をおいてもう一度お試しください。')
           setErrMsg('通話待機中のパートナーがいません。時間をおいてもう一度お試しください。')
           setErrPop(true)
+          fb.off()
           return
         }
       })
@@ -69,16 +74,17 @@ const IndexPage: NextPage = () => {
       alert('trycall error')
       throw e
     }
-    return
   }
 
   /* 通信確立 */
   const connectPartner = (partnerinfo: WaitingRoom) => {
+    console.log('ぴあID', partnerinfo.peerid)
     db.ref(runroom + '/' + partnerinfo.userid + '/guest').set({ userid: 'guest' })
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream: MediaStream) => {
         setOwn(stream)
+        console.log('ぴあID', partnerinfo.peerid)
         const mediaConnection = peer.call(partnerinfo.peerid, stream)
         db.ref(waitingroom + '/' + partnerinfo.userid).remove()
         mediaConnection.once('close', () => {
