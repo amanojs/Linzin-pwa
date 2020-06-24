@@ -53,7 +53,7 @@ const IndexPage: NextPage = () => {
       setWait(true)
       let partnerinfo: WaitingRoom | null = null
       const fb = db.ref(waitingroom)
-      fb.on('child_added', (snapshot) => {
+      fb.once('child_added', (snapshot) => {
         console.log('snapshot', snapshot.val())
         console.log(snapshot.val())
         if (snapshot.val()) {
