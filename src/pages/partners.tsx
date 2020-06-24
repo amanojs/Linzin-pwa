@@ -107,7 +107,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
         />
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/images/favicon.ico" />
-        <link rel="apple-touch-icon" href="/images/icon-192x192.png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="/images/Icon-196-partners.png" sizes="196x196" />
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
@@ -135,9 +135,14 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
           </button>
         </PopUp>
 
-        <button className="logout_btn" onClick={() => logout()}>
+        <button className="logout_btn toLogout" onClick={() => logout()}>
           ログアウト
         </button>
+        {/* <Link href={{ pathname: '/' }}>
+          <a>
+            <Button color="#fff" backcolor="#f00" value="コールズ" />
+          </a>
+        </Link> */}
         <TopLayout
           thema="リンジン公式パートナーサービス"
           color="#fff"
@@ -156,11 +161,6 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
           display={own_videosrc != null ? true : false}
           partnerMethod={stopHost}
         />
-        <Link href={{ pathname: '/' }}>
-          <a>
-            <Button color="#fff" backcolor="#f00" value="コールズ" />
-          </a>
-        </Link>
       </Provider>
       <style jsx global>{`
         body {
@@ -169,12 +169,21 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
         }
       `}</style>
       <style jsx>{`
+        .toLogout {
+          text-decoration: none;
+          font-size: 15px;
+          font-weight: bold;
+          letter-spacing: 0px;
+          border: 0px;
+          border-radius: 2px;
+        }
         .logout_btn {
           position: absolute;
           top: 10px;
           right: 10px;
           width: 100px;
           height: 30px;
+          color: #22a6b3;
         }
         .done_label {
           display: flex;

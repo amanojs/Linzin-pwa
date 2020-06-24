@@ -122,7 +122,7 @@ const IndexPage: NextPage = () => {
       </Head>
       <Provider store={store}>
         <a href="/partners" className="toPartners">
-          パートナーズページ
+          パートナーズへ
         </a>
 
         <PopUp open_flg={errpop}>
@@ -180,11 +180,11 @@ const IndexPage: NextPage = () => {
           right: 10px;
           color: #fff;
           text-decoration: none;
-          font-size: 14px;
+          font-size: 15px;
           font-weight: bold;
           letter-spacing: 0px;
-          padding: 5px;
-          background-color: #21a6b3;
+          padding: 5px 10px;
+          background-color: rgb(4, 170, 132);
           border-radius: 2px;
         }
         .done_label {
