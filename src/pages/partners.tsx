@@ -26,6 +26,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
   const [errmsg, setErrMsg] = React.useState<string>('')
   const [callpop, setCallpop] = React.useState<boolean>(false)
   const [waitmode, setWait] = React.useState<boolean>(false)
+  let calling: boolean = false
 
   var myid: string = ''
   var peer: PeerType.default
@@ -56,15 +57,18 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
         setWait(true)
         setOwn(stream)
         db.ref(waitingroom + '/' + myid).set(data)
-        console.log('データ挿入しました')
-        peer.on('call', (mediaConnection: PeerType.MediaConnection) => {
-          db.ref(runroom + '/' + myid + '/' + myid).set(data)
-          mediaConnection.answer(stream)
-          setEventListener(mediaConnection)
-          mediaConnection.once('close', () => {
-            setCallpop(true)
-            setPartner(null)
-          })
+        peer.once('call', (mediaConnection: PeerType.MediaConnection) => {
+          if (calling === false) {
+            calling = true
+            db.ref(runroom + '/' + myid + '/' + myid).set(data)
+            mediaConnection.answer(stream)
+            setEventListener(mediaConnection)
+            mediaConnection.once('close', () => {
+              setCallpop(true)
+              setPartner(null)
+            })
+          }
+          return
         })
       })
       .catch(function(err: Error) {

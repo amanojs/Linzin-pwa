@@ -19,6 +19,7 @@ import { Provider } from 'react-redux'
 import { CallDisp } from '../components/Moles/CallDisp'
 import { TopLayout } from '../components/Moles/TopLayout'
 import { PopUp } from '../components/Moles/PopUp'
+import { resolve } from 'path'
 
 const IndexPage: NextPage = () => {
   const [own_videosrc, setOwn] = React.useState<MediaStream | null>(null)
@@ -28,6 +29,7 @@ const IndexPage: NextPage = () => {
   const [errmsg, setErrMsg] = React.useState<string>('')
   const [callpop, setCallpop] = React.useState<boolean>(false)
   const [waitmode, setWait] = React.useState<boolean>(false)
+  let calling: boolean = false
 
   var peer: PeerType.default
   React.useEffect(() => {
@@ -79,7 +81,7 @@ const IndexPage: NextPage = () => {
   /* 通信確立 */
   const connectPartner = (partnerinfo: WaitingRoom) => {
     console.log('ぴあID', partnerinfo.peerid)
-    db.ref(runroom + '/' + partnerinfo.userid + '/guest').set({ userid: 'guest' })
+    //db.ref(runroom + '/' + partnerinfo.userid + '/guest').set({ userid: 'guest' })
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
       .then((stream: MediaStream) => {
@@ -100,10 +102,25 @@ const IndexPage: NextPage = () => {
   }
 
   /* リモートストリームをvideoに設定 */
-  const setEventListener = (mediaConnection: PeerType.MediaConnection) => {
+  const setEventListener = async (mediaConnection: PeerType.MediaConnection) => {
     setMc(mediaConnection)
     mediaConnection.on('stream', (stream: MediaStream) => {
+      calling = true
       setPartner(stream)
+      return
+    })
+    await sleep()
+    if (calling === false) {
+      setErrMsg('通話待機中のパートナーがいません。時間をおいてもう一度お試しください。')
+      setErrPop(true)
+    }
+  }
+
+  const sleep = () => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve()
+      }, 2500)
     })
   }
 
