@@ -107,7 +107,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
         />
         <link rel="manifest" href="/manifest.json" />
         <link rel="shortcut icon" href="/images/favicon.ico" />
-        <link rel="apple-touch-icon" href="/images/Icon-196-partners.png" sizes="196x196" />
+        <link rel="apple-touch-icon" href="/images/icons/Icon-196-partners.png" sizes="196x196" />
         <script src="https://cdn.webrtc.ecl.ntt.com/skyway-latest.js"></script>
       </Head>
       <Provider store={store}>
