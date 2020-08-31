@@ -33,13 +33,22 @@ const IndexPage: NextPage = () => {
 
   var peer: PeerType.default
   React.useEffect(() => {
+    const ws = new WebSocket("wss://linzin.net/ws?type=partner")
+    ws.onopen = function (e) {
+      console.log("コネクションを開始しまいた。");
+    };
+
+    //エラーが発生したされた時の動き
+    ws.onerror = function (error) {
+      console.log("エラーが発生しました。");
+    };
     peer = startPeer()
     peer.on('error', (err: Error) => {
       setErrMsg('peer通信に問題が発生しました')
       setErrPop(true)
       console.log('peer-error:' + err)
     })
-    return () => {}
+    return () => { }
   }, [])
 
   /* パートナー検索 */
@@ -95,7 +104,7 @@ const IndexPage: NextPage = () => {
         })
         setEventListener(mediaConnection)
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.error(error)
         return
       })
