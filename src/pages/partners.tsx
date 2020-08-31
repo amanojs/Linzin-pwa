@@ -13,6 +13,7 @@ import { Provider } from 'react-redux'
 import store from '../store'
 import { TopLayout } from '../components/Moles/TopLayout'
 import { PopUp } from '../components/Moles/PopUp'
+import { ApiEp } from '../globalvar'
 
 interface OwnProps {
   email?: string
@@ -37,7 +38,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
       setErrPop(true)
       console.log('peer-error:' + err)
     })
-    return () => {}
+    return () => { }
   }, [])
 
   const testAdd = async () => {
@@ -53,10 +54,13 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
     }
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
-      .then(function(stream: MediaStream) {
+      .then(function (stream: MediaStream) {
         setWait(true)
         setOwn(stream)
+        const ws = new WebSocket("ws://localhost:23450/ws")
+        return
         db.ref(waitingroom + '/' + myid).set(data)
+
         peer.once('call', (mediaConnection: PeerType.MediaConnection) => {
           if (calling === false) {
             calling = true
@@ -71,7 +75,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
           return
         })
       })
-      .catch(function(err: Error) {
+      .catch(function (err: Error) {
         setErrMsg('使用可能なカメラ、またはマイクを接続してください')
         setErrPop(true)
         return
