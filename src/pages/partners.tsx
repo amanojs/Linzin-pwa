@@ -38,7 +38,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
       setErrPop(true)
       console.log('peer-error:' + err)
     })
-    return () => { }
+    return () => {}
   }, [])
 
   const testAdd = async () => {
@@ -54,10 +54,10 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
     }
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
-      .then(function (stream: MediaStream) {
+      .then(function(stream: MediaStream) {
         setWait(true)
         setOwn(stream)
-        const ws = new WebSocket("ws://localhost:23450/ws")
+        const ws = new WebSocket('ws://localhost:23450/ws/wait?type=partner&email=' + props.email)
         return
         db.ref(waitingroom + '/' + myid).set(data)
 
@@ -75,7 +75,7 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
           return
         })
       })
-      .catch(function (err: Error) {
+      .catch(function(err: Error) {
         setErrMsg('使用可能なカメラ、またはマイクを接続してください')
         setErrPop(true)
         return
