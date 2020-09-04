@@ -57,20 +57,28 @@ const PartnersPage: NextPage<OwnProps> = (props) => {
       .then(function(stream: MediaStream) {
         setWait(true)
         setOwn(stream)
-        const ws = new WebSocket('ws://localhost:23450/ws/wait?type=partner&email=' + props.email)
-        return
+        const waitWs = new WebSocket('ws://localhost:23450/ws/wait?type=partner&email=' + props.email)
         db.ref(waitingroom + '/' + myid).set(data)
-
-        peer.once('call', (mediaConnection: PeerType.MediaConnection) => {
+        peer.once('call', (mediaConnection: any) => {
           if (calling === false) {
-            calling = true
-            db.ref(runroom + '/' + myid + '/' + myid).set(data)
-            mediaConnection.answer(stream)
-            setEventListener(mediaConnection)
-            mediaConnection.once('close', () => {
-              setCallpop(true)
-              setPartner(null)
-            })
+            console.log(mediaConnection._options.connectionId)
+            if (mediaConnection._options.connectionId === 'user') {
+              calling = true
+              db.ref(runroom + '/' + myid + '/' + myid).set(data)
+              mediaConnection.answer(stream)
+              setEventListener(mediaConnection)
+              waitWs.close()
+              const roomWs = new WebSocket(
+                'ws://localhost:23450/ws/room?type=partner&email=' + props.email + '&peerId=' + peer.id
+              )
+              mediaConnection.once('close', () => {
+                setCallpop(true)
+                setPartner(null)
+                roomWs.close()
+              })
+            } else if (mediaConnection._options.connectionId === 'admin') {
+              mediaConnection.answer(stream)
+            }
           }
           return
         })
