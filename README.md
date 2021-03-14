@@ -1,11 +1,7 @@
 # Next.js & PWA(next-offline) & TypeScript & Prettier & ESLint
 
 ## 説明
-
-Next.js を使用して開発を始める際のテンプレートプロジェクトです。  
-PWA(Progressive Web Application)対応。  
-[next-offline](https://github.com/hanford/next-offline)を使用。  
-clone してご自由にお使いください。
+PWA(Progressive Web Application)対応
 
 ### 使用技術等
 
